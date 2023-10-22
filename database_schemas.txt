@@ -1,0 +1,30 @@
+The Database schemas of the following is as follows :-
+1. Clients Table:
+   - Stores information about the agency's clients, their contact details, billing information, and their assigned account manager.
+
+2. Campaigns Table:
+   - Manages campaign details, including budget, start and end dates, and the creative director in charge.
+
+3. Advertisements Table:
+   - Tracks and manages individual advertisements within campaigns, including details such as the type of ad, its content, and the creative team responsible.
+
+4. Employees Table:
+   - Stores information about agency employees, including their positions, contact information, salaries, and department assignments.
+
+5. Ad Placements Table:
+   - Records where advertisements are placed, associated costs, and the duration of placements.
+
+6. Invoices Table:
+   - Manages the agency's finances and billing for clients. It tracks invoices, their associated clients and campaigns, payment status, and total amounts.
+
+7. Payments Table:
+   - Records payments received from clients, including payment date, method, and transaction reference.
+
+8. Vendor/Supplier Information Table:
+    - This table is crucial for maintaining details about vendors and suppliers who provide services or goods to the agency. It includes vendor names, contact information, services provided, and payment terms.
+
+9. Vendor Invoices Table:
+    - Tracks invoices from vendors, including details such as vendor ID, date, total amount, and payment status. This helps in managing payments to vendors.
+
+10. Performance Metrics Table:
+   - Monitors the performance of advertisements, including metrics like impressions, clicks, conversions, and dates.
