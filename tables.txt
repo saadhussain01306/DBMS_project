@@ -1,81 +1,81 @@
+TABLE CREATION: -
 The tables with the attributes are as follows: -
+
 1. Clients Table:
-   - ClientID (Primary Key): A unique identifier for each client.
-   - Name: The name of the client.
-   - Email: The client's email address for communication.
-   - Phone: The client's contact phone number.
-   - Billing Address: The client's billing address.
-   - Account Manager ID (Foreign Key): A reference to the assigned account manager's.
-
-
+ - ClientID (Primary Key): A unique identifier for each client.
+ - Name: The name of the client.
+ - Email: The client's email address for communication.
+ - Phone: The client's contact phone number.
+ - Billing Address: The client's billing address.
+ - Account Managers: -A reference to the assigned account managers.
 
 2. Campaigns Table:
-   - Campaign ID (Primary Key): A unique identifier for each campaign.
-   - Name: The name of the campaign.
-   - Budget: The allocated budget for the campaign.
-   - StartDate: The start date of the campaign.
-   - End Date: The end date of the campaign.
-   - Creative Director: The creative director in charge.
+ - Campaign ID (Primary Key): A unique identifier for each campaign.
+ - ClientID (Foreign Key): A unique identifier for each client.
+ - Name: The name of the campaign.
+ - Budget: The allocated budget for the campaign.
+ - StartDate: The start date of the campaign.
+ - End Date: The end date of the campaign.
+ - Creative Director: The creative director in charge.
 
 3. Advertisements Table:
-   - Advertisement ID (Primary Key): A unique identifier for each advertisement.
-   - Campaign ID (Foreign Key): A reference to the campaign the ad belongs to.
-   - Type: The type of advertisement (e.g., video, banner, text).
-   - Content: Details and content of the advertisement.
-   - Creative Team: The team responsible for creating the ad.
+ - Advertisement ID (Primary Key): A unique identifier for each advertisement.
+ - Campaign ID (Foreign Key): A reference to the campaign the ad belongs to.
+ - Type: The type of advertisement (e.g., video, banner, text).
+ - Content: Details and content of the advertisement.
+ - Creative Team: The team responsible for creating the ad.
 
 4. Employees Table:
-   - Employee ID (Primary Key): A unique identifier for each employee.
-   - Name: The name of the employee.
-   - Position: The job position or role of the employee.
-   - Email: The employee's email address.
-   - Phone: The employee's contact phone number.
-   - Salary: The employee's salary.
-   - Department: The department to which the employee is assigned.
+ - Employee ID (Primary Key): A unique identifier for each employee.
+ - Name: The name of the employee.
+ - Position: The job position or role of the employee.
+ - Email: The employee's email address.
+ - Phone: The employee's contact phone number.
+ - Salary: The employee's salary.
+ - Department: The department to which the employee is assigned.
 
 5. Advertisement Placements Table:
-   - Placement ID (Primary Key): A unique identifier for each placement.
-   - Advertisement ID (Foreign Key): A reference to the advertisement being placed.
-   - Placement Details: Information about where the advertisement is placed.
-   - Cost: The cost associated with the placement.
-   - Duration: The duration of the placement.
+ - Placement ID (Primary Key): A unique identifier for each placement.
+ - Advertisement ID (Foreign Key): A reference to the advertisement being placed.
+ - Placement Details: Information about where the advertisement is placed.
+ - Cost: The cost associated with the placement.
+ - Duration: The duration of the placement.
 
 6. Invoices Table:
-   - Invoice ID (Primary Key): A unique identifier for each invoice.
-   - Client ID (Foreign Key): A reference to the client associated with the invoice.
-   - Campaign ID (Foreign Key): A reference to the campaign associated with the invoice.
-   - Invoice Date: The date the invoice was issued.
-   - Payment Status: Indicates whether the invoice has been paid or not.
-   - Total Amount: The total amount of the invoice.
+ - Invoice ID (Primary Key): A unique identifier for each invoice.
+ - Client ID (Foreign Key): A reference to the client associated with the invoice.
+ - Campaign ID (Foreign Key): A reference to the campaign associated with the invoice.
+ - Invoice Date: The date the invoice was issued.
+ - Payment Status: Indicates whether the invoice has been paid or not.
+ - Total Amount: The total amount of the invoice.
 
 7. Payments Table:
-   - Payment ID (Primary Key): A unique identifier for each payment.
-   - Invoice ID (Foreign Key): A reference to the invoice for which the payment is made.
-   - Employee ID (Foreign Key): A reference to the salary provided to the Employee.
-   - Payment Date: The date the payment was received.
-   - Payment Method: The method of payment (e.g., check, credit card).
-   - Transaction Reference: A reference number for the payment transaction.
+ - Payment ID (Primary Key): A unique identifier for each payment.
+ - Invoice ID (Foreign Key): A reference to the invoice for which the payment is made.
+ - Employee ID (Foreign Key): A reference to the salary provided to the Employee.
+ - Payment Date: The date the payment was received.
+ - Payment Method: The method of payment (e.g., check, credit card).
+ - Transaction Reference: A reference number for the payment transaction.
 
 8. Vendor/Supplier Information Table:
-   - Vendor ID (Primary Key): A unique identifier for each vendor.
-   - Vendor Name: The name of the vendor or supplier.
-   - Contact Info: Contact information for the vendor.
-   - Services Provided: Details about the services or goods provided by the vendor.
-   - Payment Terms: The terms and conditions for vendor payments.
-  
-
+ - Vendor ID (Primary Key): A unique identifier for each vendor.
+ - Vendor Name: The name of the vendor or supplier.
+ - Contact Info: Contact information for the vendor.
+ - Services Provided: Details about the services or goods provided by the vendor.
+ - Payment Terms: The terms and conditions for vendor payments.
+ 
 9. Vendor Invoices Table:
-   - Invoice ID (Primary Key): A unique identifier for each vendor invoice.
-   - Vendor ID (Foreign Key): A reference to the vendor associated with the invoice.
-   - Invoice Date: The date the vendor invoice was issued.
-   - Total Amount: The total amount of the vendor invoice.
-   - Payment Status: Indicates whether the vendor invoice has been paid or not.
-   - Payment ID (Foreign key): Payment ID for the payment made to the vendor.
+ - Invoice ID (Primary Key): A unique identifier for each vendor invoice.
+ - Vendor ID (Foreign Key): A reference to the vendor associated with the invoice.
+ - Invoice Date: The date the vendor invoice was issued.
+ - Total Amount: The total amount of the vendor invoice.
+ - Payment Status: Indicates whether the vendor invoice has been paid or not.
+ - Payment ID (Foreign key): Payment ID for the payment made to the vendor.
 
 10. Performance Metrics Table:
-   - Metric ID (Primary Key): A unique identifier for each performance metric record.
-   - Advertisement ID (Foreign Key): A advertisement for which metrics are  provided. 
-   - Impressions: The number of times the ad was viewed.
-   - Clicks: The number of times the ad was clicked.
-   - Conversions: The number of desired actions taken because of the ad.
-   - Date: The date for which the performance metrics are recorded.
+ - Metric ID (Primary Key): A unique identifier for each performance metric record.
+ - Advertisement ID (Foreign Key): A advertisement for which metrics are provided. 
+ - Impressions: The number of times the ad was viewed.
+ - Clicks: The number of times the ad was clicked.
+ - Conversions: The number of desired actions taken because of the ad.
+ - Date: The date for which the performance metrics are recorded.
