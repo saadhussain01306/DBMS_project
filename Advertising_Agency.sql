@@ -9,18 +9,21 @@ CREATE TABLE Clients (
     Email VARCHAR(255),
     Phone VARCHAR(15),
     BillingAddress VARCHAR(255),
-    AccountManagerID INT,
-    FOREIGN KEY (AccountManagerID) REFERENCES Employees(EmployeeID)
+    AccountManager VARCHAR(255)
+    
 );
 
 -- Create Campaigns Table
 CREATE TABLE Campaigns (
     CampaignID INT PRIMARY KEY,
+    ClientID INT,
     Name VARCHAR(255),
     Budget DECIMAL(10, 2),
     StartDate DATE,
     EndDate DATE,
-    CreativeDirector VARCHAR(255)
+    CreativeDirector VARCHAR(255),
+    FOREIGN KEY (ClientID) REFERENCES Clients(ClientID)
+    
 );
 
 -- Create Advertisements Table
@@ -65,6 +68,7 @@ CREATE TABLE Invoices (
     FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
     FOREIGN KEY (CampaignID) REFERENCES Campaigns(CampaignID)
 );
+
 
 -- Create Payments Table
 CREATE TABLE Payments (
