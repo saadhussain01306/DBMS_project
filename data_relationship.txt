@@ -1,41 +1,63 @@
+DATA RELATIONSHIPS: 
+-
 1. Clients Table and Campaigns Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One client (in the Clients Table) can be associated with multiple campaigns (in the Campaigns Table). This relationship is established through the Account Manager ID in the Clients Table, which references the assigned account manager's ID.
+ - Data Relationship: One-to-Many
+ - Explanation: One client (in the Clients Table) can be associated with multiple campaigns 
+(in the Campaigns Table). This relationship is established through the ClientID in the Clients 
+Table, which references the assigned CampaignID in the Campaign Table.
 
 2. Campaigns Table and Advertisements Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One campaign (in the Campaigns Table) can have multiple advertisements (in the Advertisements Table). This relationship is established through the Campaign ID in the Advertisements Table, which references the campaign to which the ad belongs.
-
+ - Data Relationship: One-to-Many
+ - Explanation: One campaign (in the Campaigns Table) can have multiple advertisements 
+(in the Advertisements Table). This relationship is established through the Campaign ID in 
+the Advertisements Table, which references the campaign to which the ad belongs.
 
 3. Clients Table and Invoices Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One client (in the Clients Table) can have multiple invoices (in the Invoices Table). This relationship is established through the Client ID in the Invoices Table, which references the client associated with the invoice.
+ - Data Relationship: One-to-Many
+ - Explanation: One client (in the Clients Table) can have multiple invoices (in the Invoices 
+Table). This relationship is established through the Client ID in the Invoices Table, which 
+references the client associated with the invoice.
 
 4. Campaigns Table and Invoices Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One campaign (in the Campaigns Table) can have multiple invoices (in the Invoices Table). This relationship is established through the Campaign ID in the Invoices Table, which references the campaign associated with the invoice.
+ - Data Relationship: One-to-Many
+ - Explanation: One campaign (in the Campaigns Table) can have multiple invoices (in the 
+Invoices Table). This relationship is established through the Campaign ID in the Invoices 
+Table, which references the campaign associated with the invoice.
 
 5. Invoices Table and Payments Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One invoice (in the Invoices Table) can have multiple payments (in the Payments Table). This relationship is established through the Invoice ID in the Payments Table, which references the invoice for which the payment is made.
+ - Data Relationship: One-to-Many
+ - Explanation: One invoice (in the Invoices Table) can have multiple payments (in the 
+Payments Table). This relationship is established through the Invoice ID in the Payments 
+Table, which references the invoice for which the payment is made.
 
 6. Payments Table and Employees Table:
-   - Data Relationship: Many-to-One
-   - Explanation: Multiple payments (in the Payments Table) can be associated with one employee (in the Employees Table). This relationship is established through the Employee ID in the Payments Table, which references the employee receiving the payment.
+ - Data Relationship: Many-to-One
+ - Explanation: Multiple payments (in the Payments Table) can be associated with one 
+employee (in the Employees Table). This relationship is established through the Employee ID 
+in the Payments Table, which references the employee receiving the payment.
 
 7. Vendor/Supplier Information Table and Vendor Invoices Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One vendor or supplier (in the Vendor/Supplier Information Table) can have multiple invoices (in the Vendor Invoices Table). This relationship is established through the Vendor ID in the Vendor Invoices Table, which references the vendor associated with the invoice.
+ - Data Relationship: One-to-Many
+ - Explanation: One vendor or supplier (in the Vendor/Supplier Information Table) can have 
+multiple invoices (in the Vendor Invoices Table). This relationship is established through the 
+Vendor ID in the Vendor Invoices Table, which references the vendor associated with the 
+invoice.
 
 8. Advertisements Table and Advertisement Placements Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One advertisement (in the Advertisements Table) can have multiple placements (in the Advertisement Placements Table). This relationship is established through the Advertisement ID in the Advertisement Placements Table, which references the advertisement being placed.
+ - Data Relationship: One-to-Many
+ - Explanation: One advertisement (in the Advertisements Table) can have multiple 
+placements (in the Advertisement Placements Table). This relationship is established 
+through the Advertisement ID in the Advertisement Placements Table, which references the 
+advertisement being placed.
 
 9. Advertisements Table and Performance Metrics Table:
-   - Data Relationship: One-to-Many
-   - Explanation: One advertisement (in the Advertisements Table) can have multiple performance metrics records (in the Performance Metrics Table). This relationship is established through the Advertisement ID in the Performance Metrics Table, which references the advertisement for which metrics are provided.
+ - Data Relationship: One-to-Many
+ - Explanation: One advertisement (in the Advertisements Table) can have multiple 
+performance metrics records (in the Performance Metrics Table). This relationship is 
+established through the Advertisement ID in the Performance Metrics Table, which 
+references the advertisement for which metrics are provided.
 
 10. Payment Table and Vendor Invoices Table:
-   - Data Relationship: One-to-One
-   - Explanation: One vendor or supplier Invoice have a unique ID in the payments Table,
-      which references the payment to be made
+ - Data Relationship: One-to-One
+ - Explanation: One vendor or supplier Invoice have a unique ID in the payments Table,
+ which references the payment to be made
