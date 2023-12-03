@@ -121,16 +121,16 @@ CREATE TABLE PerformanceMetrics (
 -- Insert data into Clients table
 INSERT INTO Clients (ClientID, Name, Email, Phone, BillingAddress, AccountManager)
 VALUES
-(1, 'Client1', 'client1@example.com', '123-456-7890', 'Billing Address 1', 'Manager1'),
-(2, 'Client2', 'client2@example.com', '234-567-8901', 'Billing Address 2', 'Manager2'),
-(3, 'Client3', 'client3@example.com', '345-678-9012', 'Billing Address 3', 'Manager3'),
-(4, 'Client4', 'client4@example.com', '456-789-0123', 'Billing Address 4', 'Manager4'),
-(5, 'Client5', 'client5@example.com', '567-890-1234', 'Billing Address 5', 'Manager5'),
-(6, 'Client6', 'client6@example.com', '678-901-2345', 'Billing Address 6', 'Manager6'),
-(7, 'Client7', 'client7@example.com', '789-012-3456', 'Billing Address 7', 'Manager7'),
-(8, 'Client8', 'client8@example.com', '890-123-4567', 'Billing Address 8', 'Manager8'),
-(9, 'Client9', 'client9@example.com', '901-234-5678', 'Billing Address 9', 'Manager9'),
-(10, 'Client10', 'client10@example.com', '012-345-6789', 'Billing Address 10', 'Manager10');
+(1, 'Nike India', 'manager@nike.com', '123-456-7890', '123, Kuvempu Nagar, Mysuru, Karnataka, 570023', 'Rahul Shah'),
+(2, 'Haldiram Snakcs Private Limited', 'cs@haldiram.com', '234-567-8901', '456, Vijayanagar, Mysuru, Karnataka, 570016', 'Rohit Gowda'),
+(3, 'A2B Restaurants', 'care@aabsweets.com', '345-678-9012', '789, Siddhartha Layout, Mysuru, Karnataka, 570011', 'Arman Singh'),
+(4, 'Manipal Hospitals', 'manager@manipal.com', '456-789-0123', '234, Jayalakshmipuram, Mysuru, Karnataka, 570012', 'Bhaskar Jain'),
+(5, 'Loyal World Supermarket Mysuru', 'manager@loyalworldmys.com', '567-890-1234', '567, Lakshmipuram, Mysuru, Karnataka, 570024', 'Rohini Bhat'),
+(6, 'Vishal Mart Mysuru', 'manager@vishalmartmys.com', '678-901-2345', '890, Chamundi Vihar, Mysuru, Karnataka, 570019', 'Radha Shenoy'),
+(7, 'DMart Bengaluru', 'manager@dmartblr.com', '789-012-3456', '789, Kuvempu Nagar, Mysuru, Karnataka, 570023', 'Raghav Sharma'),
+(8, 'Dosa Point', 'manager@dosapoint.com', '890-123-4567', '890, Chamundi Vihar, Mysuru, Karnataka, 570019', 'Madhav Ullas'),
+(9, 'Bhaskar''s Mane Holige', 'manager@bmholige.com', '901-234-5678', '890, Chamundi Vihar, Mysuru, Karnataka, 570019', 'Krishnamurthy Shankar'),
+(10, 'Airtel Mysuru', 'manager@airtelmys.com', '012-345-6789', '789, Kuvempu Nagar, Mysuru, Karnataka, 570023', 'Naresh Reddy');
 
 -- Insert data into Campaigns table
 INSERT INTO Campaigns (CampaignID, ClientID, Name, Budget, StartDate, EndDate, CreativeDirector)
