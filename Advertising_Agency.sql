@@ -149,16 +149,16 @@ VALUES
 -- Insert data into Advertisements table
 INSERT INTO Advertisements (AdvertisementID, CampaignID, Type, Content, CreativeTeam)
 VALUES
-(1, 1, 'Banner', 'Banner Content 1', 'Team1'),
-(2, 1, 'Video', 'Video Content 1', 'Team2'),
-(3, 2, 'Banner', 'Banner Content 2', 'Team3'),
-(4, 2, 'Video', 'Video Content 2', 'Team4'),
-(5, 3, 'Banner', 'Banner Content 3', 'Team5'),
-(6, 3, 'Video', 'Video Content 3', 'Team6'),
-(7, 4, 'Banner', 'Banner Content 4', 'Team7'),
-(8, 4, 'Video', 'Video Content 4', 'Team8'),
-(9, 5, 'Banner', 'Banner Content 5', 'Team9'),
-(10, 5, 'Video', 'Video Content 5', 'Team10');
+(1, 1, 'Billboard', 'https://hask.inc/content/1', 'Mavericks'),
+(2, 1, 'Social media posts', 'https://hask.inc/content/2', 'BrandWave'),
+(3, 2, 'Newspaper Ads', 'https://hask.inc/content/3', 'BuzzBlend'),
+(4, 2, 'Billboard', 'https://hask.inc/content/4', 'BuzzBlend'),
+(5, 3, 'Social media posts', 'https://hask.inc/content/5', 'VibeSync'),
+(6, 3, 'Newspaper Ads/Banners', 'https://hask.inc/content/6', 'FusionFlow'),
+(7, 4, 'Billboards/Newspaper Ads', 'https://hask.inc/content/7', 'PromoPulse'),
+(8, 4, 'Social media posts', 'https://hask.inc/content/8', 'VibeSync'),
+(9, 5, 'Youtube/TV Ad', 'https://hask.inc/content/9', 'PixelCraft'),
+(10, 5, 'Social media posts', 'https://hask.inc/content/10', 'PromoPulse');
 
 -- Insert data into Employees table
 INSERT INTO Employees (EmployeeID, Name, Position, Email, Phone, Salary, Department)
