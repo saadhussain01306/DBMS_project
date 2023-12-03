@@ -177,16 +177,17 @@ VALUES
 -- Insert data into AdvertisementPlacements table
 INSERT INTO AdvertisementPlacements (PlacementID, AdvertisementID, PlacementDetails, Cost, Duration)
 VALUES
-(1, 1, 'Top Banner', 1000.00, 30),
-(2, 2, 'Sidebar Ad', 800.00, 15),
-(3, 3, 'Homepage Banner', 1200.00, 45),
-(4, 4, 'Video Pre-roll', 1500.00, 60),
-(5, 5, 'Featured Ad', 2000.00, 30),
-(6, 6, 'Social Media Promo', 1800.00, 30),
-(7, 7, 'In-article Banner', 900.00, 20),
-(8, 8, 'Video Ad Overlay', 1300.00, 45),
-(9, 9, 'Homepage Takeover', 2500.00, 60),
-(10, 10, 'Sponsored Content', 1600.00, 30);
+(1, 1, 'Billboard - Top Location', 1000.00, 30),
+(2, 2, 'Social Media - Sidebar Promotion', 800.00, 15),
+(3, 3, 'Newspaper - Homepage Feature', 1200.00, 45),
+(4, 4, 'Billboard - Video Pre-roll', 1500.00, 60),
+(5, 5, 'Social Media - Featured Ad Placement', 2000.00, 30),
+(6, 6, 'Newspaper - Social Media Promo', 1800.00, 30),
+(7, 7, 'Billboard - In-article Banner', 900.00, 20),
+(8, 8, 'Social Media - Video Ad Overlay', 1300.00, 45),
+(9, 9, 'TV, Youtube- Homepage Takeover', 2500.00, 60),
+(10, 10, 'Online Article - Sponsored Content', 1600.00, 30);
+
 
 -- Insert data into Invoices table
 INSERT INTO Invoices (InvoiceID, ClientID, CampaignID, InvoiceDate, PaymentStatus, TotalAmount)
@@ -219,16 +220,16 @@ VALUES
 -- Insert data into VendorSupplierInformation table
 INSERT INTO VendorSupplierInformation (VendorID, VendorName, ContactInfo, ServicesProvided, PaymentTerms)
 VALUES
-(1, 'Vendor1', 'vendor1@example.com', 'Ad Design', 'Net 30'),
-(2, 'Vendor2', 'vendor2@example.com', 'Video Production', 'Net 45'),
-(3, 'Vendor3', 'vendor3@example.com', 'Analytics Services', 'Net 60'),
-(4, 'Vendor4', 'vendor4@example.com', 'Ad Placement', 'Net 30'),
-(5, 'Vendor5', 'vendor5@example.com', 'Social Media Promotion', 'Net 45'),
-(6, 'Vendor6', 'vendor6@example.com', 'Content Creation', 'Net 60'),
-(7, 'Vendor7', 'vendor7@example.com', 'Graphic Design', 'Net 30'),
-(8, 'Vendor8', 'vendor8@example.com', 'Video Editing', 'Net 45'),
-(9, 'Vendor9', 'vendor9@example.com', 'SEO Services', 'Net 60'),
-(10, 'Vendor10', 'vendor10@example.com', 'Copywriting', 'Net 30');
+(1, 'CreativeSolutions', 'creative@gmail.com', 'Ad Design', 'Net 30'),
+(2, 'VisionaryProductions', 'visionary@gmail.com', 'Video Production', 'Net 45'),
+(3, 'DataInsightsCo', 'datainsights@gmail.com', 'Analytics Services', 'Net 60'),
+(4, 'MediaMasters', 'media@gmail.com', 'Ad Placement', 'Net 30'),
+(5, 'SocialBuzzPromo', 'socialbuzz@gmail.com', 'Social Media Promotion', 'Net 45'),
+(6, 'ContentCrafters', 'crafters@gmail.com', 'Content Creation', 'Net 60'),
+(7, 'DesignDynamo', 'design@gmail.com', 'Graphic Design', 'Net 30'),
+(8, 'EditExpress', 'edit@gmail.com', 'Video Editing', 'Net 45'),
+(9, 'SEOStrategists', 'seo@gmail.com', 'SEO Services', 'Net 60'),
+(10, 'WordWizards', 'wizards@gmail.com', 'Copywriting', 'Net 30');
 
 -- Insert data into VendorInvoices table
 INSERT INTO VendorInvoices (InvoiceID, PaymentID, VendorID, InvoiceDate, TotalAmount, PaymentStatus)
