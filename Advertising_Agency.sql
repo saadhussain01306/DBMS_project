@@ -163,16 +163,16 @@ VALUES
 -- Insert data into Employees table
 INSERT INTO Employees (EmployeeID, Name, Position, Email, Phone, Salary, Department)
 VALUES
-(1, 'Employee1', 'Manager', 'employee1@example.com', '345-678-9012', 60000.00, 'Marketing'),
-(2, 'Employee2', 'Designer', 'employee2@example.com', '456-789-0123', 55000.00, 'Design'),
-(3, 'Employee3', 'Analyst', 'employee3@example.com', '567-890-1234', 70000.00, 'Analytics'),
-(4, 'Employee4', 'Developer', 'employee4@example.com', '678-901-2345', 80000.00, 'IT'),
-(5, 'Employee5', 'Manager', 'employee5@example.com', '789-012-3456', 65000.00, 'Marketing'),
-(6, 'Employee6', 'Designer', 'employee6@example.com', '890-123-4567', 60000.00, 'Design'),
-(7, 'Employee7', 'Analyst', 'employee7@example.com', '901-234-5678', 75000.00, 'Analytics'),
-(8, 'Employee8', 'Developer', 'employee8@example.com', '012-345-6789', 85000.00, 'IT'),
-(9, 'Employee9', 'Manager', 'employee9@example.com', '123-456-7890', 70000.00, 'Marketing'),
-(10, 'Employee10', 'Designer', 'employee10@example.com', '234-567-8901', 60000.00, 'Design');
+(1, 'Amit Sharma', 'Manager', 'amit.sharma@gmail.com', '345-678-9012', 60000.00, 'Marketing'),
+(2, 'Priya Patel', 'Designer', 'priya.patel@outlook.com', '456-789-0123', 55000.00, 'Design'),
+(3, 'Rajesh Kumar', 'Analyst', 'rajesh.kumar@yahoo.com', '567-890-1234', 70000.00, 'Analytics'),
+(4, 'Sneha Verma', 'Developer', 'sneha.verma@gmail.com', '678-901-2345', 80000.00, 'IT'),
+(5, 'Arjun Singh', 'Manager', 'arjun.singh@gmail.com', '789-012-3456', 65000.00, 'Marketing'),
+(6, 'Kavita Gupta', 'Designer', 'kavita.gupta@outlook.com', '890-123-4567', 60000.00, 'Design'),
+(7, 'Ananya Reddy', 'Analyst', 'ananya.reddy@yahoo.com', '901-234-5678', 75000.00, 'Analytics'),
+(8, 'Vikram Patel', 'Developer', 'vikram.patel@gmail.com', '012-345-6789', 85000.00, 'IT'),
+(9, 'Suman Verma', 'Manager', 'suman.verma@yahoo.com', '123-456-7890', 70000.00, 'Marketing'),
+(10, 'Neha Kapoor', 'Designer', 'neha.kapoor@gmail.com', '234-567-8901', 60000.00, 'Design');
 
 -- Insert data into AdvertisementPlacements table
 INSERT INTO AdvertisementPlacements (PlacementID, AdvertisementID, PlacementDetails, Cost, Duration)
