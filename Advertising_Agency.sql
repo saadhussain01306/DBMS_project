@@ -135,16 +135,16 @@ VALUES
 -- Insert data into Campaigns table
 INSERT INTO Campaigns (CampaignID, ClientID, Name, Budget, StartDate, EndDate, CreativeDirector)
 VALUES
-(1, 1, 'Campaign1', 5000.00, '2023-01-01', '2023-02-01', 'Director1'),
-(2, 1, 'Campaign2', 8000.00, '2023-03-01', '2023-04-01', 'Director2'),
-(3, 2, 'Campaign3', 6000.00, '2023-02-01', '2023-03-01', 'Director3'),
-(4, 2, 'Campaign4', 7000.00, '2023-04-01', '2023-05-01', 'Director4'),
-(5, 3, 'Campaign5', 9000.00, '2023-03-01', '2023-04-01', 'Director5'),
-(6, 3, 'Campaign6', 12000.00, '2023-05-01', '2023-06-01', 'Director6'),
-(7, 4, 'Campaign7', 10000.00, '2023-04-01', '2023-05-01', 'Director7'),
-(8, 4, 'Campaign8', 15000.00, '2023-06-01', '2023-07-01', 'Director8'),
-(9, 5, 'Campaign9', 11000.00, '2023-05-01', '2023-06-01', 'Director9'),
-(10, 5, 'Campaign10', 18000.00, '2023-07-01', '2023-08-01', 'Director10');
+(1, 1, 'Shoes Billboard', 5000.00, '2023-01-01', '2023-02-01', 'Nawaz Khan'),
+(2, 1, 'Jerseys Social Media Campaign', 8000.00, '2023-03-01', '2023-04-01', 'Rohit Roy'),
+(3, 2, 'Haldirams End Of Month Sale', 6000.00, '2023-02-01', '2023-03-01', 'Yash Dubey'),
+(4, 2, 'Products billboard', 7000.00, '2023-04-01', '2023-05-01', 'Wren D Souza'),
+(5, 3, 'Social media campaign', 9000.00, '2023-03-01', '2023-04-01', 'Karan Brar'),
+(6, 3, 'Delicious Dosa December Campaign', 12000.00, '2023-05-01', '2023-06-01', 'Shamla Krishnan'),
+(7, 4, 'Heart Disease Prrevention Campaign(Offline)', 10000.00, '2023-04-01', '2023-05-01', 'Sudha Iyer'),
+(8, 4, 'Healthcare cards campaign(social media)', 15000.00, '2023-06-01', '2023-07-01', 'Walter White'),
+(9, 5, 'End of Month sale', 11000.00, '2023-05-01', '2023-06-01', 'Sal Peter'),
+(10, 5, '25 years anniversary campaign(social media)', 18000.00, '2023-07-01', '2023-08-01', 'Ashman Joshi');
 
 -- Insert data into Advertisements table
 INSERT INTO Advertisements (AdvertisementID, CampaignID, Type, Content, CreativeTeam)
