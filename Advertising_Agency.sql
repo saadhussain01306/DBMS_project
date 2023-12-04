@@ -258,3 +258,236 @@ VALUES
 (8, 8, 150000, 2500, 150, '2023-05-01'),
 (9, 9, 110000, 1600, 110, '2023-06-01'),
 (10, 10, 180000, 3000, 180, '2023-06-01');
+
+-- Retrieve all clients and their respective campaigns
+SELECT Clients.Name AS ClientName, Campaigns.Name AS CampaignName
+FROM Clients
+JOIN Campaigns ON Clients.ClientID = Campaigns.ClientID;
+
+ -- Retrieve the total budget spent on campaigns
+SELECT SUM(Budget) AS TotalBudgetSpent
+FROM Campaigns;
+
+-- Retrieve the total revenue from invoices
+SELECT SUM(TotalAmount) AS TotalRevenue
+FROM Invoices;
+-- the above query is for the revenue table
+
+-- Retrieve the total cost of advertisements
+SELECT SUM(Cost) AS TotalAdCost
+FROM AdvertisementPlacements;
+
+-- Retrieve the total salary expense for each department
+SELECT Department, SUM(Salary) AS TotalSalaryExpense
+FROM Employees
+GROUP BY Department;
+
+
+-- Retrieve the names of clients who have paid their invoices
+SELECT Name
+FROM Clients
+WHERE ClientID IN (SELECT ClientID FROM Invoices WHERE PaymentStatus = 'Paid');
+
+-- Retrieve the average impressions, clicks, and conversions for each advertisement type
+SELECT Type, AVG(Impressions) AS AvgImpressions, AVG(Clicks) AS AvgClicks, AVG(Conversions) AS AvgConversions
+FROM Advertisements
+JOIN PerformanceMetrics ON Advertisements.AdvertisementID = PerformanceMetrics.AdvertisementID
+GROUP BY Type;
+
+-- Update the payment status of invoices with pending payments to 'Paid' if payment date has passed
+UPDATE Invoices
+SET PaymentStatus = 'Paid'
+WHERE PaymentStatus = 'Pending' AND InvoiceDate <= CURDATE();
+-- curdate not working please check once
+
+-- Delete advertisements with zero impressions
+DELETE FROM Advertisements
+WHERE AdvertisementID IN (SELECT AdvertisementID FROM PerformanceMetrics WHERE Impressions = 0);
+
+
+--Retrieve the vendors who have provided services with payment terms longer than 'Net 30'
+SELECT VendorName
+FROM VendorSupplierInformation
+WHERE PaymentTerms > 'Net 30';
+
+-- Calculate the average budget for campaigns managed by each account manager
+SELECT AccountManager, AVG(Budget) AS AvgBudget
+FROM Clients
+JOIN Campaigns ON Clients.ClientID = Campaigns.ClientID
+GROUP BY AccountManager;
+
+
+-- Retrieve the top-performing advertisement (highest number of clicks) for each campaign
+SELECT Campaigns.Name AS CampaignName, Advertisements.Type, Advertisements.Content, MAX(PerformanceMetrics.Clicks) AS MaxClicks
+FROM Campaigns
+JOIN Advertisements ON Campaigns.CampaignID = Advertisements.CampaignID
+JOIN PerformanceMetrics ON Advertisements.AdvertisementID = PerformanceMetrics.AdvertisementID
+GROUP BY Campaigns.CampaignID;
+
+
+-- Find the client with the highest total expenditure (sum of campaign budgets)
+SELECT Clients.Name AS ClientName, SUM(Campaigns.Budget) AS TotalExpenditure
+FROM Clients
+JOIN Campaigns ON Clients.ClientID = Campaigns.ClientID
+GROUP BY Clients.ClientID
+ORDER BY TotalExpenditure DESC
+LIMIT 1;
+
+
+-- Retrieve the employees who have not made any payments
+SELECT Employees.Name AS EmployeeName
+FROM Employees
+LEFT JOIN Payments ON Employees.EmployeeID = Payments.EmployeeID
+WHERE Payments.EmployeeID IS NULL;
+
+-- Calculate the total revenue and total cost for each campaign
+SELECT Campaigns.Name AS CampaignName, SUM(Invoices.TotalAmount) AS TotalRevenue, SUM(AdvertisementPlacements.Cost) AS TotalCost
+FROM Campaigns
+LEFT JOIN Invoices ON Campaigns.CampaignID = Invoices.CampaignID
+LEFT JOIN AdvertisementPlacements ON Campaigns.CampaignID = AdvertisementPlacements.AdvertisementID
+GROUP BY Campaigns.CampaignID;
+
+-- Retrieve the campaigns that have exceeded their budget by more than 20%
+SELECT Campaigns.Name AS CampaignName, Campaigns.Budget, SUM(AdvertisementPlacements.Cost) AS TotalCost
+FROM Campaigns
+LEFT JOIN AdvertisementPlacements ON Campaigns.CampaignID = AdvertisementPlacements.CampaignID
+GROUP BY Campaigns.CampaignID
+HAVING TotalCost > 1.2 * Budget;
+
+-- Calculate the average duration of advertisement placements for each type
+SELECT Advertisements.Type, AVG(AdvertisementPlacements.Duration) AS AvgDuration
+FROM Advertisements
+JOIN AdvertisementPlacements ON Advertisements.AdvertisementID = AdvertisementPlacements.AdvertisementID
+GROUP BY Advertisements.Type;
+
+-- Retrieve the campaigns where the creative director is also part of the creative team
+SELECT Campaigns.Name AS CampaignName, Campaigns.CreativeDirector, Advertisements.CreativeTeam
+FROM Campaigns
+JOIN Advertisements ON Campaigns.CampaignID = Advertisements.CampaignID
+WHERE Advertisements.CreativeDirector = Advertisements.CreativeTeam;
+
+-- Calculate the total number of conversions for each department involved in a campaign
+SELECT Employees.Department, SUM(PerformanceMetrics.Conversions) AS TotalConversions
+FROM Employees
+JOIN Advertisements ON Employees.Name = Advertisements.CreativeTeam
+JOIN PerformanceMetrics ON Advertisements.AdvertisementID = PerformanceMetrics.AdvertisementID
+GROUP BY Employees.Department;
+
+-- Retrieve the campaigns that have not been invoiced
+SELECT Campaigns.Name AS CampaignName
+FROM Campaigns
+LEFT JOIN Invoices ON Campaigns.CampaignID = Invoices.CampaignID
+WHERE Invoices.CampaignID IS NULL;
+
+-- Views:
+-- View to display information about each advertisement placement with its associated campaign and client
+CREATE VIEW vw_AdPlacementDetails AS
+SELECT
+    ap.PlacementID,
+    ap.AdvertisementID,
+    ap.PlacementDetails,
+    ap.Cost,
+    ap.Duration,
+    c.Name AS CampaignName,
+    cl.Name AS ClientName
+FROM AdvertisementPlacements ap
+JOIN Advertisements a ON ap.AdvertisementID = a.AdvertisementID
+JOIN Campaigns c ON a.CampaignID = c.CampaignID
+JOIN Clients cl ON c.ClientID = cl.ClientID;
+
+-- View to show the total payments made by each client
+CREATE VIEW vw_TotalPaymentsByClient AS
+SELECT
+    c.ClientID,
+    c.Name AS ClientName,
+    SUM(i.TotalAmount) AS TotalPayments
+FROM Clients c
+LEFT JOIN Invoices i ON c.ClientID = i.ClientID
+GROUP BY c.ClientID;
+
+-- Trigger to update the total budget of a campaign when a new advertisement placement is added
+CREATE TRIGGER trg_UpdateCampaignBudget
+AFTER INSERT ON AdvertisementPlacements
+FOR EACH ROW
+BEGIN
+    UPDATE Campaigns
+    SET Budget = Budget + NEW.Cost
+    WHERE CampaignID = (SELECT CampaignID FROM Advertisements WHERE AdvertisementID = NEW.AdvertisementID);
+END;
+
+-- Trigger to enforce a constraint on the maximum duration of an advertisement placement
+CREATE TRIGGER trg_CheckDuration
+BEFORE INSERT ON AdvertisementPlacements
+FOR EACH ROW
+BEGIN
+    DECLARE maxDuration INT;
+    SET maxDuration = 60; -- Set the maximum duration as needed
+    
+    IF NEW.Duration > maxDuration THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Duration exceeds the maximum allowed duration.';
+    END IF;
+END;
+
+-- Complex Views:
+-- View to display performance metrics with additional calculated fields
+CREATE VIEW vw_PerformanceMetricsExtended AS
+SELECT
+    pm.MetricID,
+    pm.AdvertisementID,
+    pm.Impressions,
+    pm.Clicks,
+    pm.Conversions,
+    pm.Date,
+    a.Type AS AdvertisementType,
+    a.Content AS AdvertisementContent,
+    c.Name AS CampaignName,
+    cl.Name AS ClientName,
+    (pm.Conversions / pm.Clicks) * 100 AS ConversionRate
+FROM PerformanceMetrics pm
+JOIN Advertisements a ON pm.AdvertisementID = a.AdvertisementID
+JOIN Campaigns c ON a.CampaignID = c.CampaignID
+JOIN Clients cl ON c.ClientID = cl.ClientID;
+
+-- View to show the total amount paid and pending for each campaign
+CREATE VIEW vw_CampaignPaymentStatus AS
+SELECT
+    c.CampaignID,
+    c.Name AS CampaignName,
+    SUM(i.TotalAmount) AS TotalAmountPaid,
+    (c.Budget - SUM(i.TotalAmount)) AS AmountPending
+FROM Campaigns c
+LEFT JOIN Invoices i ON c.CampaignID = i.CampaignID
+GROUP BY c.CampaignID;
+
+-- Complex Triggers
+-- Trigger to update the total amount and payment status when a new invoice is added
+CREATE TRIGGER trg_UpdateCampaignPaymentStatus
+AFTER INSERT ON Invoices
+FOR EACH ROW
+BEGIN
+    UPDATE vw_CampaignPaymentStatus cps
+    SET cps.TotalAmountPaid = cps.TotalAmountPaid + NEW.TotalAmount,
+        cps.AmountPending = cps.AmountPending - NEW.TotalAmount
+    WHERE cps.CampaignID = NEW.CampaignID;
+END;
+
+-- Trigger to prevent deleting clients with active campaigns
+CREATE TRIGGER trg_PreventDeleteClient
+BEFORE DELETE ON Clients
+FOR EACH ROW
+BEGIN
+    DECLARE campaignCount INT;
+
+    SELECT COUNT(*)
+    INTO campaignCount
+    FROM Campaigns
+    WHERE ClientID = OLD.ClientID;
+
+    IF campaignCount > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot delete client with active campaigns.';
+    END IF;
+END;
+
+-- congestion control and store procedure to be updated
