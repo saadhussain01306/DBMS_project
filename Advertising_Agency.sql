@@ -266,10 +266,43 @@ JOIN campaigns ON clients.client_id = campaigns.client_id;
 SELECT SUM(budget) AS total_budget_spent
 FROM campaigns;
 
+-- Categorizing the campaigns based on the budget
+SELECT
+    CASE
+        WHEN budget < 6000 THEN 'Less than 6000'
+        WHEN budget BETWEEN 6000 AND 12000 THEN 'Between 6000 and 12000'
+        WHEN budget > 12000 THEN '12000 and more'
+        ELSE 'Uncategorized'
+    END AS budget_category,
+    COUNT(*) AS campaign_count
+FROM
+    campaigns
+GROUP BY
+    budget_category;
+
+
 -- Retrieve the total revenue from invoices
 SELECT SUM(total_amount) AS total_revenue
 FROM invoices;
 -- the above query is for the revenue table
+
+-- Categorize the invoices based on the payment status
+SELECT SUM(total_amount) AS amount, COUNT(payment_status) AS invoices_count, payment_status  
+FROM invoices
+GROUP BY payment_status;
+
+-- Group invoices based on the quarter
+SELECT
+    EXTRACT(QUARTER FROM invoice_date) AS quarter,
+    COUNT(*) AS num_invoices,
+    SUM(total_amount) AS total_amount,
+    AVG(total_amount) AS average_amount
+FROM
+    invoices
+GROUP BY
+    quarter
+ORDER BY
+    quarter;
 
 -- Retrieve the total cost of advertisements
 SELECT SUM(cost) AS total_ad_cost
@@ -347,8 +380,8 @@ LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_plac
 GROUP BY campaigns.campaign_id
 HAVING total_cost > 1.2 * budget;
 
---- Calculate the average duration of advertisement placements for each type
-SELECT advertisements.type, AVG(advertisement_placements.duration) AS avg_duration
+-- Calculate the average duration of advertisement placements for each type
+SELECT advertisements.type, AVG(advertisement_placements.duration_days) AS avg_duration
 FROM advertisements
 JOIN advertisement_placements ON advertisements.advertisement_id = advertisement_placements.advertisement_id
 GROUP BY advertisements.type;
@@ -380,7 +413,7 @@ SELECT
     ap.advertisement_id,
     ap.placement_details,
     ap.cost,
-    ap.duration,
+    ap.duration_days,
     c.name AS campaign_name,
     cl.name AS client_name
 FROM advertisement_placements ap
@@ -416,7 +449,7 @@ BEGIN
     DECLARE max_duration INT;
     SET max_duration = 60; -- Set the maximum duration as needed
     
-    IF NEW.duration > max_duration THEN
+    IF NEW.duration_days > max_duration THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Duration exceeds the maximum allowed duration.';
     END IF;
@@ -484,8 +517,11 @@ BEGIN
 END;
 
 -- Indexes
-
 CREATE INDEX idx_client_id ON campaigns (client_id);
+
+-- Update column duration in advertisement_placements to duration_days
+ALTER TABLE advertisement_placements
+RENAME COLUMN duration TO duration_days;
 
 -- congestion control and store procedure to be updated
 
