@@ -517,7 +517,10 @@ BEGIN
 END;
 
 -- Indexes
-CREATE INDEX idx_client_id ON campaigns (client_id);
+CREATE INDEX idx_clients_email ON clients(email);
+CREATE INDEX idx_campaigns_name ON campaigns(name);
+CREATE INDEX idx_advertisements_type ON advertisements(type);
+CREATE INDEX idx_employees_email ON employees(position);
 
 -- Update column duration in advertisement_placements to duration_days
 ALTER TABLE advertisement_placements
