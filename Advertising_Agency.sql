@@ -1,128 +1,126 @@
--- create the database Advertising_Agency
-CREATE DATABASE Advertising_Agency;
-USE Advertising_Agency;
+-- Create the database advertising_agency
+CREATE DATABASE advertising_agency;
+USE advertising_agency;
 
--- Create Clients Table
-CREATE TABLE Clients (
-    ClientID INT PRIMARY KEY,
-    Name VARCHAR(255),
-    Email VARCHAR(255),
-    Phone VARCHAR(15),
-    BillingAddress VARCHAR(255),
-    AccountManager VARCHAR(255)
-    
+-- Create clients table
+CREATE TABLE clients (
+    client_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(15),
+    billing_address VARCHAR(255),
+    account_manager VARCHAR(255)
 );
 
--- Create Campaigns Table
-CREATE TABLE Campaigns (
-    CampaignID INT PRIMARY KEY,
-    ClientID INT,
-    Name VARCHAR(255),
-    Budget DECIMAL(10, 2),
-    StartDate DATE,
-    EndDate DATE,
-    CreativeDirector VARCHAR(255),
-    FOREIGN KEY (ClientID) REFERENCES Clients(ClientID)
-    
+-- Create campaigns table
+CREATE TABLE campaigns (
+    campaign_id INT PRIMARY KEY,
+    client_id INT,
+    name VARCHAR(255),
+    budget DECIMAL(10, 2),
+    start_date date,
+    end_date date,
+    creative_director VARCHAR(255),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
--- Create Advertisements Table
-CREATE TABLE Advertisements (
-    AdvertisementID INT PRIMARY KEY,
-    CampaignID INT,
-    Type VARCHAR(50),
-    Content TEXT,
-    CreativeTeam VARCHAR(255),
-    FOREIGN KEY (CampaignID) REFERENCES Campaigns(CampaignID)
+-- Create advertisements table
+CREATE TABLE advertisements (
+    advertisement_id INT PRIMARY KEY,
+    campaign_id INT,
+    type VARCHAR(50),
+    content TEXT,
+    creative_team VARCHAR(255),
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
 );
 
--- Create Employees Table
-CREATE TABLE Employees (
-    EmployeeID INT PRIMARY KEY,
-    Name VARCHAR(255),
-    Position VARCHAR(50),
-    Email VARCHAR(255),
-    Phone VARCHAR(15),
-    Salary DECIMAL(10, 2),
-    Department VARCHAR(50)
+-- Create employees table
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    position VARCHAR(50),
+    email VARCHAR(255),
+    phone VARCHAR(15),
+    salary DECIMAL(10, 2),
+    department VARCHAR(50)
 );
 
--- Create Advertisement Placements Table
-CREATE TABLE AdvertisementPlacements (
-    PlacementID INT PRIMARY KEY,
-    AdvertisementID INT,
-    PlacementDetails VARCHAR(255),
-    Cost DECIMAL(10, 2),
-    Duration INT,
-    FOREIGN KEY (AdvertisementID) REFERENCES Advertisements(AdvertisementID)
+-- Create advertisement_placements table
+CREATE TABLE advertisement_placements (
+    placement_id INT PRIMARY KEY,
+    advertisement_id INT,
+    placement_details VARCHAR(255),
+    cost DECIMAL(10, 2),
+    duration INT,
+    FOREIGN KEY (advertisement_id) REFERENCES advertisements(advertisement_id)
 );
 
--- Create Invoices Table
-CREATE TABLE Invoices (
-    InvoiceID INT PRIMARY KEY,
-    ClientID INT,
-    CampaignID INT,
-    InvoiceDate DATE,
-    PaymentStatus VARCHAR(20),
-    TotalAmount DECIMAL(10, 2),
-    FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
-    FOREIGN KEY (CampaignID) REFERENCES Campaigns(CampaignID)
-);
-
-
--- Create Payments Table
-CREATE TABLE Payments (
-    PaymentID INT PRIMARY KEY,
-    InvoiceID INT,
-    EmployeeID INT,
-    PaymentDate DATE,
-    PaymentMethod VARCHAR(50),
-    TransactionReference VARCHAR(255),
-    FOREIGN KEY (InvoiceID) REFERENCES Invoices(InvoiceID),
-    FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
-);
-
--- Create Vendor/Supplier Information Table
-CREATE TABLE VendorSupplierInformation (
-    VendorID INT PRIMARY KEY,
-    VendorName VARCHAR(255),
-    ContactInfo VARCHAR(255),
-    ServicesProvided TEXT,
-    PaymentTerms VARCHAR(255)
-);
-
--- Create Vendor Invoices Table
-CREATE TABLE VendorInvoices (
-    InvoiceID INT PRIMARY KEY,
-    PaymentID INT,
-    VendorID INT,
-    InvoiceDate DATE,
-    TotalAmount DECIMAL(10, 2),
-    PaymentStatus VARCHAR(20),
-    FOREIGN KEY (VendorID) REFERENCES VendorSupplierInformation(VendorID),
-    FOREIGN KEY (PaymentID)REFERENCES Payments(PaymentID)
+-- Create invoices table
+CREATE TABLE invoices (
+    invoice_id INT PRIMARY KEY,
+    client_id INT,
+    campaign_id INT,
+    invoice_date date,
+    payment_status VARCHAR(20),
+    total_amount DECIMAL(10, 2),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
 );
 
 
--- Create Performance Metrics Table
-CREATE TABLE PerformanceMetrics (
-    MetricID INT PRIMARY KEY,
-    AdvertisementID INT,
-    Impressions INT,
-    Clicks INT,
-    Conversions INT,
-    Date DATE,
-    FOREIGN KEY (AdvertisementID) REFERENCES Advertisements(AdvertisementID)
+-- Create payments table
+CREATE TABLE payments (
+    payment_id INT PRIMARY KEY,
+    invoice_id INT,
+    employee_id INT,
+    payment_date date,
+    payment_method VARCHAR(50),
+    transaction_reference VARCHAR(255),
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
+
+-- Create vendor_supplier_information table
+CREATE TABLE vendor_supplier_information (
+    vendor_id INT PRIMARY KEY,
+    vendor_name VARCHAR(255),
+    contact_info VARCHAR(255),
+    services_provided TEXT,
+    payment_terms VARCHAR(255)
+);
+
+-- Create vendor_invoices table
+CREATE TABLE vendor_invoices (
+    invoice_id INT PRIMARY KEY,
+    payment_id INT,
+    vendor_id INT,
+    invoice_date date,
+    total_amount DECIMAL(10, 2),
+    payment_status VARCHAR(20),
+    FOREIGN KEY (vendor_id) REFERENCES vendor_supplier_information(vendor_id),
+    FOREIGN KEY (payment_id) REFERENCES payments(payment_id)
+);
+
+-- Create performance_metrics table
+CREATE TABLE performance_metrics (
+    metric_id INT PRIMARY KEY,
+    advertisement_id INT,
+    impressions INT,
+    clicks INT,
+    conversions INT,
+    date date,
+    FOREIGN KEY (advertisement_id) REFERENCES advertisements(advertisement_id)
+);
+
 
 -- INSERTION
 
 -- Inserting the data into the above tables
--- Insert data into Clients table
-INSERT INTO Clients (ClientID, Name, Email, Phone, BillingAddress, AccountManager)
+-- Insert data into clients table
+INSERT INTO clients (client_id, name, email, Phone, billing_address, account_manager)
 VALUES
 (1, 'Nike India', 'manager@nike.com', '123-456-7890', '123, Kuvempu Nagar, Mysuru, Karnataka, 570023', 'Rahul Shah'),
-(2, 'Haldiram Snakcs Private Limited', 'cs@haldiram.com', '234-567-8901', '456, Vijayanagar, Mysuru, Karnataka, 570016', 'Rohit Gowda'),
+(2, 'Haldiram Snacks Private Limited', 'cs@haldiram.com', '234-567-8901', '456, Vijayanagar, Mysuru, Karnataka, 570016', 'Rohit Gowda'),
 (3, 'A2B Restaurants', 'care@aabsweets.com', '345-678-9012', '789, Siddhartha Layout, Mysuru, Karnataka, 570011', 'Arman Singh'),
 (4, 'Manipal Hospitals', 'manager@manipal.com', '456-789-0123', '234, Jayalakshmipuram, Mysuru, Karnataka, 570012', 'Bhaskar Jain'),
 (5, 'Loyal World Supermarket Mysuru', 'manager@loyalworldmys.com', '567-890-1234', '567, Lakshmipuram, Mysuru, Karnataka, 570024', 'Rohini Bhat'),
@@ -133,7 +131,7 @@ VALUES
 (10, 'Airtel Mysuru', 'manager@airtelmys.com', '012-345-6789', '789, Kuvempu Nagar, Mysuru, Karnataka, 570023', 'Naresh Reddy');
 
 -- Insert data into Campaigns table
-INSERT INTO Campaigns (CampaignID, ClientID, Name, Budget, StartDate, EndDate, CreativeDirector)
+INSERT INTO campaigns (campaign_id, client_id, name, budget, start_date, end_date, creative_director)
 VALUES
 (1, 1, 'Shoes Billboard', 5000.00, '2023-01-01', '2023-02-01', 'Nawaz Khan'),
 (2, 1, 'Jerseys Social Media Campaign', 8000.00, '2023-03-01', '2023-04-01', 'Rohit Roy'),
@@ -147,7 +145,7 @@ VALUES
 (10, 5, '25 years anniversary campaign(social media)', 18000.00, '2023-07-01', '2023-08-01', 'Ashman Joshi');
 
 -- Insert data into Advertisements table
-INSERT INTO Advertisements (AdvertisementID, CampaignID, Type, Content, CreativeTeam)
+INSERT INTO advertisements (advertisement_id, campaign_id, type, content, creative_team)
 VALUES
 (1, 1, 'Billboard', 'https://hask.inc/content/1', 'Mavericks'),
 (2, 1, 'Social media posts', 'https://hask.inc/content/2', 'BrandWave'),
@@ -161,7 +159,7 @@ VALUES
 (10, 5, 'Social media posts', 'https://hask.inc/content/10', 'PromoPulse');
 
 -- Insert data into Employees table
-INSERT INTO Employees (EmployeeID, Name, Position, Email, Phone, Salary, Department)
+INSERT INTO employees (employee_id, name, position, email, phone, salary, department)
 VALUES
 (1, 'Amit Sharma', 'Manager', 'amit.sharma@gmail.com', '345-678-9012', 60000.00, 'Marketing'),
 (2, 'Priya Patel', 'Designer', 'priya.patel@outlook.com', '456-789-0123', 55000.00, 'Design'),
@@ -175,7 +173,7 @@ VALUES
 (10, 'Neha Kapoor', 'Designer', 'neha.kapoor@gmail.com', '234-567-8901', 60000.00, 'Design');
 
 -- Insert data into AdvertisementPlacements table
-INSERT INTO AdvertisementPlacements (PlacementID, AdvertisementID, PlacementDetails, Cost, Duration)
+INSERT INTO advertisement_placements (placement_id, advertisement_id, placement_details, cost, duration)
 VALUES
 (1, 1, 'Billboard - Top Location', 1000.00, 30),
 (2, 2, 'Social Media - Sidebar Promotion', 800.00, 15),
@@ -186,11 +184,11 @@ VALUES
 (7, 7, 'Billboard - In-article Banner', 900.00, 20),
 (8, 8, 'Social Media - Video Ad Overlay', 1300.00, 45),
 (9, 9, 'TV, Youtube- Homepage Takeover', 2500.00, 60),
-(10, 10, 'Online Article - Sponsored Content', 1600.00, 30);
+(10, 10, 'Online Article - Sponsored content', 1600.00, 30);
 
 
--- Insert data into Invoices table
-INSERT INTO Invoices (InvoiceID, ClientID, CampaignID, InvoiceDate, PaymentStatus, TotalAmount)
+-- Insert data into invoices table
+INSERT INTO invoices (invoice_id, client_id, campaign_id, invoice_date, payment_status, total_amount)
 VALUES
 (1, 1, 1, '2023-02-15', 'Paid', 5000.00),
 (2, 1, 2, '2023-04-15', 'Pending', 8000.00),
@@ -203,8 +201,8 @@ VALUES
 (9, 5, 9, '2023-06-15', 'Paid', 11000.00),
 (10, 5, 10, '2023-08-15', 'Pending', 18000.00);
 
--- Insert data into Payments table
-INSERT INTO Payments (PaymentID, InvoiceID, EmployeeID, PaymentDate, PaymentMethod, TransactionReference)
+-- Insert data payments Payments table
+INSERT INTO Payments (payment_id, invoice_id, employee_id, payment_date, payment_method, transaction_reference)
 VALUES
 (1, 1, 1, '2023-02-20', 'Credit Card', 'TRX12345'),
 (2, 2, 2, '2023-04-20', 'Bank Transfer', 'TRX67890'),
@@ -218,21 +216,21 @@ VALUES
 (10, 10, 10, '2023-08-20', 'Bank Transfer', 'TRX01234');
 
 -- Insert data into VendorSupplierInformation table
-INSERT INTO VendorSupplierInformation (VendorID, VendorName, ContactInfo, ServicesProvided, PaymentTerms)
+INSERT INTO vendor_supplier_information (vendor_id, vendor_name, contact_info, services_provided, payment_terms)
 VALUES
 (1, 'CreativeSolutions', 'creative@gmail.com', 'Ad Design', 'Net 30'),
 (2, 'VisionaryProductions', 'visionary@gmail.com', 'Video Production', 'Net 45'),
 (3, 'DataInsightsCo', 'datainsights@gmail.com', 'Analytics Services', 'Net 60'),
 (4, 'MediaMasters', 'media@gmail.com', 'Ad Placement', 'Net 30'),
 (5, 'SocialBuzzPromo', 'socialbuzz@gmail.com', 'Social Media Promotion', 'Net 45'),
-(6, 'ContentCrafters', 'crafters@gmail.com', 'Content Creation', 'Net 60'),
+(6, 'contentCrafters', 'crafters@gmail.com', 'content Creation', 'Net 60'),
 (7, 'DesignDynamo', 'design@gmail.com', 'Graphic Design', 'Net 30'),
 (8, 'EditExpress', 'edit@gmail.com', 'Video Editing', 'Net 45'),
 (9, 'SEOStrategists', 'seo@gmail.com', 'SEO Services', 'Net 60'),
 (10, 'WordWizards', 'wizards@gmail.com', 'Copywriting', 'Net 30');
 
--- Insert data into VendorInvoices table
-INSERT INTO VendorInvoices (InvoiceID, PaymentID, VendorID, InvoiceDate, TotalAmount, PaymentStatus)
+-- Insert data into Vendorinvoices table
+INSERT INTO vendor_invoices (invoice_id, payment_id, vendor_id, invoice_date, total_amount, payment_status)
 VALUES
 (1, 1, 1, '2023-02-25', 1000.00, 'Paid'),
 (2, 2, 2, '2023-04-25', 800.00, 'Pending'),
@@ -246,7 +244,7 @@ VALUES
 (10, 10, 10, '2023-08-25', 1600.00, 'Pending');
 
 -- Insert data into PerformanceMetrics table
-INSERT INTO PerformanceMetrics (MetricID, AdvertisementID, Impressions, Clicks, Conversions, Date)
+INSERT INTO performance_metrics (metric_id, advertisement_id, impressions, clicks, conversions, date)
 VALUES
 (1, 1, 50000, 1000, 50, '2023-02-01'),
 (2, 2, 70000, 1200, 70, '2023-02-01'),
@@ -260,170 +258,165 @@ VALUES
 (10, 10, 180000, 3000, 180, '2023-06-01');
 
 -- Retrieve all clients and their respective campaigns
-SELECT Clients.Name AS ClientName, Campaigns.Name AS CampaignName
-FROM Clients
-JOIN Campaigns ON Clients.ClientID = Campaigns.ClientID;
+SELECT clients.name AS client_name, campaigns.name AS campaign_name
+FROM clients
+JOIN campaigns ON clients.client_id = campaigns.client_id;
 
  -- Retrieve the total budget spent on campaigns
-SELECT SUM(Budget) AS TotalBudgetSpent
-FROM Campaigns;
+SELECT SUM(budget) AS total_budget_spent
+FROM campaigns;
 
 -- Retrieve the total revenue from invoices
-SELECT SUM(TotalAmount) AS TotalRevenue
-FROM Invoices;
+SELECT SUM(total_amount) AS total_revenue
+FROM invoices;
 -- the above query is for the revenue table
 
 -- Retrieve the total cost of advertisements
-SELECT SUM(Cost) AS TotalAdCost
-FROM AdvertisementPlacements;
+SELECT SUM(cost) AS total_ad_cost
+FROM advertisement_placements;
 
 -- Retrieve the total salary expense for each department
-SELECT Department, SUM(Salary) AS TotalSalaryExpense
-FROM Employees
-GROUP BY Department;
-
+SELECT department, SUM(salary) AS total_salary_expense
+FROM employees
+GROUP BY department;
 
 -- Retrieve the names of clients who have paid their invoices
-SELECT Name
-FROM Clients
-WHERE ClientID IN (SELECT ClientID FROM Invoices WHERE PaymentStatus = 'Paid');
+SELECT name
+FROM clients
+WHERE client_id IN (SELECT client_id FROM invoices WHERE payment_status = 'Paid');
 
 -- Retrieve the average impressions, clicks, and conversions for each advertisement type
-SELECT Type, AVG(Impressions) AS AvgImpressions, AVG(Clicks) AS AvgClicks, AVG(Conversions) AS AvgConversions
-FROM Advertisements
-JOIN PerformanceMetrics ON Advertisements.AdvertisementID = PerformanceMetrics.AdvertisementID
-GROUP BY Type;
+SELECT type, AVG(impressions) AS avg_impressions, AVG(clicks) AS avg_clicks, AVG(conversions) AS avg_conversions
+FROM advertisements
+JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
+GROUP BY type;
 
 -- Update the payment status of invoices with pending payments to 'Paid' if payment date has passed
-UPDATE Invoices
-SET PaymentStatus = 'Paid'
-WHERE PaymentStatus = 'Pending' AND InvoiceDate <= CURDATE();
+UPDATE invoices
+SET payment_status = 'Paid'
+WHERE payment_status = 'Pending' AND invoice_date <= CURDATE();
 -- curdate not working please check once
 
 -- Delete advertisements with zero impressions
-DELETE FROM Advertisements
-WHERE AdvertisementID IN (SELECT AdvertisementID FROM PerformanceMetrics WHERE Impressions = 0);
-
+DELETE FROM advertisements
+WHERE advertisement_id IN (SELECT advertisement_id FROM performance_metrics WHERE impressions = 0);
 
 --Retrieve the vendors who have provided services with payment terms longer than 'Net 30'
-SELECT VendorName
-FROM VendorSupplierInformation
-WHERE PaymentTerms > 'Net 30';
+SELECT vendor_name
+FROM vendor_supplier_information
+WHERE payment_terms > 'Net 30';
 
 -- Calculate the average budget for campaigns managed by each account manager
-SELECT AccountManager, AVG(Budget) AS AvgBudget
-FROM Clients
-JOIN Campaigns ON Clients.ClientID = Campaigns.ClientID
-GROUP BY AccountManager;
-
+SELECT account_manager, AVG(budget) AS avg_budget
+FROM clients
+JOIN campaigns ON clients.client_id = campaigns.client_id
+GROUP BY account_manager;
 
 -- Retrieve the top-performing advertisement (highest number of clicks) for each campaign
-SELECT Campaigns.Name AS CampaignName, Advertisements.Type, Advertisements.Content, MAX(PerformanceMetrics.Clicks) AS MaxClicks
-FROM Campaigns
-JOIN Advertisements ON Campaigns.CampaignID = Advertisements.CampaignID
-JOIN PerformanceMetrics ON Advertisements.AdvertisementID = PerformanceMetrics.AdvertisementID
-GROUP BY Campaigns.CampaignID;
-
+SELECT campaigns.name AS campaign_name, advertisements.type, advertisements.content, MAX(performance_metrics.clicks) AS max_clicks
+FROM campaigns
+JOIN advertisements ON campaigns.campaign_id = advertisements.campaign_id
+JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
+GROUP BY campaigns.campaign_id;
 
 -- Find the client with the highest total expenditure (sum of campaign budgets)
-SELECT Clients.Name AS ClientName, SUM(Campaigns.Budget) AS TotalExpenditure
-FROM Clients
-JOIN Campaigns ON Clients.ClientID = Campaigns.ClientID
-GROUP BY Clients.ClientID
-ORDER BY TotalExpenditure DESC
+SELECT clients.name AS client_name, SUM(campaigns.budget) AS total_expenditure
+FROM clients
+JOIN campaigns ON clients.client_id = campaigns.client_id
+GROUP BY clients.client_id
+ORDER BY total_expenditure DESC
 LIMIT 1;
 
-
 -- Retrieve the employees who have not made any payments
-SELECT Employees.Name AS EmployeeName
-FROM Employees
-LEFT JOIN Payments ON Employees.EmployeeID = Payments.EmployeeID
-WHERE Payments.EmployeeID IS NULL;
+SELECT employees.name AS employee_name
+FROM employees
+LEFT JOIN payments ON employees.employee_id = payments.employee_id
+WHERE payments.employee_id IS NULL;
 
 -- Calculate the total revenue and total cost for each campaign
-SELECT Campaigns.Name AS CampaignName, SUM(Invoices.TotalAmount) AS TotalRevenue, SUM(AdvertisementPlacements.Cost) AS TotalCost
-FROM Campaigns
-LEFT JOIN Invoices ON Campaigns.CampaignID = Invoices.CampaignID
-LEFT JOIN AdvertisementPlacements ON Campaigns.CampaignID = AdvertisementPlacements.AdvertisementID
-GROUP BY Campaigns.CampaignID;
+SELECT campaigns.name AS campaign_name, SUM(invoices.total_amount) AS total_revenue, SUM(advertisement_placements.cost) AS total_cost
+FROM campaigns
+LEFT JOIN invoices ON campaigns.campaign_id = invoices.campaign_id
+LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_placements.advertisement_id
+GROUP BY campaigns.campaign_id;
 
 -- Retrieve the campaigns that have exceeded their budget by more than 20%
-SELECT Campaigns.Name AS CampaignName, Campaigns.Budget, SUM(AdvertisementPlacements.Cost) AS TotalCost
-FROM Campaigns
-LEFT JOIN AdvertisementPlacements ON Campaigns.CampaignID = AdvertisementPlacements.CampaignID
-GROUP BY Campaigns.CampaignID
-HAVING TotalCost > 1.2 * Budget;
+SELECT campaigns.name AS campaign_name, campaigns.budget, SUM(advertisement_placements.cost) AS total_cost
+FROM campaigns
+LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_placements.campaign_id
+GROUP BY campaigns.campaign_id
+HAVING total_cost > 1.2 * budget;
 
--- Calculate the average duration of advertisement placements for each type
-SELECT Advertisements.Type, AVG(AdvertisementPlacements.Duration) AS AvgDuration
-FROM Advertisements
-JOIN AdvertisementPlacements ON Advertisements.AdvertisementID = AdvertisementPlacements.AdvertisementID
-GROUP BY Advertisements.Type;
+--- Calculate the average duration of advertisement placements for each type
+SELECT advertisements.type, AVG(advertisement_placements.duration) AS avg_duration
+FROM advertisements
+JOIN advertisement_placements ON advertisements.advertisement_id = advertisement_placements.advertisement_id
+GROUP BY advertisements.type;
 
 -- Retrieve the campaigns where the creative director is also part of the creative team
-SELECT Campaigns.Name AS CampaignName, Campaigns.CreativeDirector, Advertisements.CreativeTeam
-FROM Campaigns
-JOIN Advertisements ON Campaigns.CampaignID = Advertisements.CampaignID
-WHERE Advertisements.CreativeDirector = Advertisements.CreativeTeam;
+SELECT campaigns.name AS campaign_name, campaigns.creative_director, advertisements.creative_team
+FROM campaigns
+JOIN advertisements ON campaigns.campaign_id = advertisements.campaign_id
+WHERE advertisements.creative_director = advertisements.creative_team;
 
 -- Calculate the total number of conversions for each department involved in a campaign
-SELECT Employees.Department, SUM(PerformanceMetrics.Conversions) AS TotalConversions
-FROM Employees
-JOIN Advertisements ON Employees.Name = Advertisements.CreativeTeam
-JOIN PerformanceMetrics ON Advertisements.AdvertisementID = PerformanceMetrics.AdvertisementID
-GROUP BY Employees.Department;
+SELECT employees.department, SUM(performance_metrics.conversions) AS total_conversions
+FROM employees
+JOIN advertisements ON employees.name = advertisements.creative_team
+JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
+GROUP BY employees.department;
 
 -- Retrieve the campaigns that have not been invoiced
-SELECT Campaigns.Name AS CampaignName
-FROM Campaigns
-LEFT JOIN Invoices ON Campaigns.CampaignID = Invoices.CampaignID
-WHERE Invoices.CampaignID IS NULL;
+SELECT campaigns.name AS campaign_name
+FROM campaigns
+LEFT JOIN invoices ON campaigns.campaign_id = invoices.campaign_id
+WHERE invoices.campaign_id IS NULL;
 
 -- Views:
 -- View to display information about each advertisement placement with its associated campaign and client
-CREATE VIEW vw_AdPlacementDetails AS
+CREATE VIEW vw_ad_placement_details AS
 SELECT
-    ap.PlacementID,
-    ap.AdvertisementID,
-    ap.PlacementDetails,
-    ap.Cost,
-    ap.Duration,
-    c.Name AS CampaignName,
-    cl.Name AS ClientName
-FROM AdvertisementPlacements ap
-JOIN Advertisements a ON ap.AdvertisementID = a.AdvertisementID
-JOIN Campaigns c ON a.CampaignID = c.CampaignID
-JOIN Clients cl ON c.ClientID = cl.ClientID;
+    ap.placement_id,
+    ap.advertisement_id,
+    ap.placement_details,
+    ap.cost,
+    ap.duration,
+    c.name AS campaign_name,
+    cl.name AS client_name
+FROM advertisement_placements ap
+JOIN advertisements a ON ap.advertisement_id = a.advertisement_id
+JOIN campaigns c ON a.campaign_id = c.campaign_id
+JOIN clients cl ON c.client_id = cl.client_id;
 
 -- View to show the total payments made by each client
-CREATE VIEW vw_TotalPaymentsByClient AS
+CREATE VIEW vw_total_payments_by_client AS
 SELECT
-    c.ClientID,
-    c.Name AS ClientName,
-    SUM(i.TotalAmount) AS TotalPayments
-FROM Clients c
-LEFT JOIN Invoices i ON c.ClientID = i.ClientID
-GROUP BY c.ClientID;
+    c.client_id,
+    c.name AS client_name,
+    SUM(i.total_amount) AS total_payments
+FROM clients c
+LEFT JOIN invoices i ON c.client_id = i.client_id
+GROUP BY c.client_id;
 
 -- Trigger to update the total budget of a campaign when a new advertisement placement is added
-CREATE TRIGGER trg_UpdateCampaignBudget
-AFTER INSERT ON AdvertisementPlacements
+CREATE TRIGGER trg_update_campaign_budget
+AFTER INSERT ON advertisement_placements
 FOR EACH ROW
 BEGIN
-    UPDATE Campaigns
-    SET Budget = Budget + NEW.Cost
-    WHERE CampaignID = (SELECT CampaignID FROM Advertisements WHERE AdvertisementID = NEW.AdvertisementID);
+    UPDATE campaigns
+    SET budget = budget + NEW.cost
+    WHERE campaign_id = (SELECT campaign_id FROM advertisements WHERE advertisement_id = NEW.advertisement_id);
 END;
 
 -- Trigger to enforce a constraint on the maximum duration of an advertisement placement
-CREATE TRIGGER trg_CheckDuration
-BEFORE INSERT ON AdvertisementPlacements
+CREATE TRIGGER trg_check_duration
+BEFORE INSERT ON advertisement_placements
 FOR EACH ROW
 BEGIN
-    DECLARE maxDuration INT;
-    SET maxDuration = 60; -- Set the maximum duration as needed
+    DECLARE max_duration INT;
+    SET max_duration = 60; -- Set the maximum duration as needed
     
-    IF NEW.Duration > maxDuration THEN
+    IF NEW.duration > max_duration THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Duration exceeds the maximum allowed duration.';
     END IF;
@@ -431,63 +424,68 @@ END;
 
 -- Complex Views:
 -- View to display performance metrics with additional calculated fields
-CREATE VIEW vw_PerformanceMetricsExtended AS
+CREATE VIEW vw_performance_metrics_extended AS
 SELECT
-    pm.MetricID,
-    pm.AdvertisementID,
-    pm.Impressions,
-    pm.Clicks,
-    pm.Conversions,
-    pm.Date,
-    a.Type AS AdvertisementType,
-    a.Content AS AdvertisementContent,
-    c.Name AS CampaignName,
-    cl.Name AS ClientName,
-    (pm.Conversions / pm.Clicks) * 100 AS ConversionRate
-FROM PerformanceMetrics pm
-JOIN Advertisements a ON pm.AdvertisementID = a.AdvertisementID
-JOIN Campaigns c ON a.CampaignID = c.CampaignID
-JOIN Clients cl ON c.ClientID = cl.ClientID;
+    pm.metric_id,
+    pm.advertisement_id,
+    pm.impressions,
+    pm.clicks,
+    pm.conversions,
+    pm.date,
+    a.type AS advertisement_type,
+    a.content AS advertisement_content,
+    c.name AS campaign_name,
+    cl.name AS client_name,
+    (pm.conversions / pm.clicks) * 100 AS conversion_rate
+FROM performance_metrics pm
+JOIN advertisements a ON pm.advertisement_id = a.advertisement_id
+JOIN campaigns c ON a.campaign_id = c.campaign_id
+JOIN clients cl ON c.client_id = cl.client_id;
 
 -- View to show the total amount paid and pending for each campaign
-CREATE VIEW vw_CampaignPaymentStatus AS
+CREATE VIEW vw_campaign_payment_status AS
 SELECT
-    c.CampaignID,
-    c.Name AS CampaignName,
-    SUM(i.TotalAmount) AS TotalAmountPaid,
-    (c.Budget - SUM(i.TotalAmount)) AS AmountPending
-FROM Campaigns c
-LEFT JOIN Invoices i ON c.CampaignID = i.CampaignID
-GROUP BY c.CampaignID;
+    c.campaign_id,
+    c.name AS campaign_name,
+    SUM(i.total_amount) AS total_amount_paid,
+    (c.budget - SUM(i.total_amount)) AS amount_pending
+FROM campaigns c
+LEFT JOIN invoices i ON c.campaign_id = i.campaign_id
+GROUP BY c.campaign_id;
 
 -- Complex Triggers
 -- Trigger to update the total amount and payment status when a new invoice is added
-CREATE TRIGGER trg_UpdateCampaignPaymentStatus
-AFTER INSERT ON Invoices
+CREATE TRIGGER trg_update_campaign_payment_status
+AFTER INSERT ON invoices
 FOR EACH ROW
 BEGIN
-    UPDATE vw_CampaignPaymentStatus cps
-    SET cps.TotalAmountPaid = cps.TotalAmountPaid + NEW.TotalAmount,
-        cps.AmountPending = cps.AmountPending - NEW.TotalAmount
-    WHERE cps.CampaignID = NEW.CampaignID;
+    UPDATE vw_campaign_payment_status cps
+    SET cps.total_amount_paid = cps.total_amount_paid + NEW.total_amount,
+        cps.amount_pending = cps.amount_pending - NEW.total_amount
+    WHERE cps.campaign_id = NEW.campaign_id;
 END;
 
 -- Trigger to prevent deleting clients with active campaigns
-CREATE TRIGGER trg_PreventDeleteClient
-BEFORE DELETE ON Clients
+CREATE TRIGGER trg_prevent_delete_client
+BEFORE DELETE ON clients
 FOR EACH ROW
 BEGIN
-    DECLARE campaignCount INT;
+    DECLARE campaign_count INT;
 
     SELECT COUNT(*)
-    INTO campaignCount
-    FROM Campaigns
-    WHERE ClientID = OLD.ClientID;
+    INTO campaign_count
+    FROM campaigns
+    WHERE client_id = OLD.client_id;
 
-    IF campaignCount > 0 THEN
+    IF campaign_count > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Cannot delete client with active campaigns.';
     END IF;
 END;
 
+-- Indexes
+
+CREATE INDEX idx_client_id ON campaigns (client_id);
+
 -- congestion control and store procedure to be updated
+
