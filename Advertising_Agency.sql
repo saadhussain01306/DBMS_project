@@ -305,13 +305,63 @@ ORDER BY
     quarter;
 
 -- Retrieve the total cost of advertisements
-SELECT SUM(cost) AS total_ad_cost
+SELECT SUM(cost) AS total_ad_cost, AVG(cost) AS avg_ad_cost
 FROM advertisement_placements;
+
+-- Categorize the data based on the duration_days field into three categories and then calculate  no of ads and total cost for each category
+SELECT
+    CASE
+        WHEN duration_days <= 20 THEN 'Less than 20 days'
+        WHEN duration_days > 20 AND duration_days <= 40 THEN 'Between 20 and 40 days'
+        WHEN duration_days > 40 THEN 'More than 40 days'
+        ELSE 'Uncategorized'
+    END AS duration_category,
+    COUNT(*) AS num_ads,
+    SUM(cost) AS total_cost
+FROM
+    advertisement_placements
+GROUP BY
+    duration_category;
+
 
 -- Retrieve the total salary expense for each department
 SELECT department, SUM(salary) AS total_salary_expense
 FROM employees
 GROUP BY department;
+
+-- Total Number of Employees in Each Department
+SELECT department, COUNT(*) AS num_employees
+FROM employees
+GROUP BY department;
+
+-- Average Salary by Department: 
+SELECT department, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department;
+
+-- Top 5 Highest Paid Employees
+SELECT
+    employee_id,
+    name,
+    position,
+    salary
+FROM
+    employees
+ORDER BY
+    salary DESC
+LIMIT 5;
+
+-- Employees with Manager Position:
+SELECT
+    employee_id,
+    name,
+    position,
+    department
+FROM
+    employees
+WHERE
+    position = 'Manager';
+
 
 -- Retrieve the names of clients who have paid their invoices
 SELECT name
