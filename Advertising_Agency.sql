@@ -576,5 +576,65 @@ CREATE INDEX idx_employees_email ON employees(position);
 ALTER TABLE advertisement_placements
 RENAME COLUMN duration TO duration_days;
 
--- congestion control and store procedure to be updated
+-- Concurrency control and store procedure to be updated
+
+--  Ensure that the insertion of client and campaign is atomic
+START TRANSACTION;
+INSERT INTO clients (client_id, name, email, Phone, billing_address, account_manager) VALUES (...);
+INSERT INTO campaigns (campaign_id, client_id, name, budget, start_date, end_date, creative_director) VALUES (...);
+COMMIT;
+
+--  Set isolation level for a specific transaction
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+-- Explicit lock to prevent other transactions from modifying the same rows
+START TRANSACTION;
+SELECT * FROM campaigns WHERE client_id = 1 FOR UPDATE;
+-- Perform updates
+COMMIT;
+
+-- Explicit lock to prevent other transactions from modifying the same rows
+START TRANSACTION;
+SELECT * FROM campaigns WHERE client_id = 1 FOR UPDATE;
+-- Performing updates 
+UPDATE campaigns SET budget = budget + 2000 WHERE client_id = 1;
+COMMIT;
+
+-- Concurrency control using timestamps: Use a timestamp column to track changes
+-- CREATE TABLE campaigns (
+--     campaign_id INT PRIMARY KEY,
+--     client_id INT,
+--     name VARCHAR(255),
+--     budget DECIMAL(10, 2),
+--     start_date date,
+--     end_date date,
+--     creative_director VARCHAR(255),
+--     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- );
+
+-- Use a version column for optimistic concurrency control
+-- CREATE TABLE campaigns (
+--     campaign_id INT PRIMARY KEY,
+--     client_id INT,
+--     name VARCHAR(255),
+--     budget DECIMAL(10, 2),
+--     start_date date,
+--     end_date date,
+--     creative_director VARCHAR(255),
+--     version INT DEFAULT 1
+-- );
+--  
+--  -- Check for conflicts before updating
+-- START TRANSACTION;
+-- SELECT version INTO @version FROM campaigns WHERE campaign_id = 1;
+-- Check @version against the expected version before updating
+-- UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id = 1 AND version = @version;
+-- COMMIT;
+
+
+
+
+
+
+
 
