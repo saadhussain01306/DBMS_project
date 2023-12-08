@@ -719,20 +719,20 @@ WHERE client_id IN (SELECT client_id FROM invoices WHERE payment_status = 'Paid'
 
 
 -- Retrieve the average impressions, clicks, and conversions for each advertisement type
-SELECT type, AVG(impressions) AS avg_impressions, AVG(clicks) AS avg_clicks, AVG(conversions) AS avg_conversions
+SELECT type, COUNT(*) AS count, AVG(impressions) AS avg_impressions, AVG(clicks) AS avg_clicks, AVG(conversions) AS avg_conversions
 FROM advertisements
 JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
 GROUP BY type;
-+--------------------------+-----------------+------------+-----------------+
-| type                     | avg_impressions | avg_clicks | avg_conversions |
-+--------------------------+-----------------+------------+-----------------+
-| Billboard                |      65000.0000 |  1250.0000 |         65.0000 |
-| Social media posts       |     122500.0000 |  2125.0000 |        122.5000 |
-| Newspaper Ads            |      60000.0000 |   800.0000 |         40.0000 |
-| Newspaper Ads/Banners    |     120000.0000 |  2000.0000 |        120.0000 |
-| Billboards/Newspaper Ads |     100000.0000 |  1300.0000 |        100.0000 |
-| Youtube/TV Ad            |     110000.0000 |  1600.0000 |        110.0000 |
-+--------------------------+-----------------+------------+-----------------+
++--------------------------+-------+-----------------+------------+-----------------+
+| type                     | count | avg_impressions | avg_clicks | avg_conversions |
++--------------------------+-------+-----------------+------------+-----------------+
+| Billboard                |     2 |      65000.0000 |  1250.0000 |         65.0000 |
+| Social media posts       |     4 |     122500.0000 |  2125.0000 |        122.5000 |
+| Newspaper Ads            |     1 |      60000.0000 |   800.0000 |         40.0000 |
+| Newspaper Ads/Banners    |     1 |     120000.0000 |  2000.0000 |        120.0000 |
+| Billboards/Newspaper Ads |     1 |     100000.0000 |  1300.0000 |        100.0000 |
+| Youtube/TV Ad            |     1 |     110000.0000 |  1600.0000 |        110.0000 |
++--------------------------+-------+-----------------+------------+-----------------+
 
 -- Update the payment status of invoices with pending payments to 'Paid' if payment date has passed
 UPDATE invoices
