@@ -1,6 +1,6 @@
--- Create the database advertising_agency
-CREATE DATABASE advertising_agency;
-USE advertising_agency;
+-- Create the database Advertising_company
+CREATE DATABASE Advertising_company;
+USE Advertising_company;
 
 -- Create clients table
 CREATE TABLE clients (
@@ -112,9 +112,33 @@ CREATE TABLE performance_metrics (
     FOREIGN KEY (advertisement_id) REFERENCES advertisements(advertisement_id)
 );
 
+-- Create feedback table
+CREATE TABLE feedback (
+    feedback_id INT PRIMARY KEY,
+    campaign_id INT,
+    advertisement_id INT,
+    client_id INT,
+    employee_id INT,
+    feedback_date date,
+    feedback_text TEXT,
+    rating FLOAT, 
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
+    FOREIGN KEY (advertisement_id) REFERENCES advertisements(advertisement_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
 
--- INSERTION
+-- Create suggestions table
+CREATE TABLE suggestions (
+    suggestion_id INT PRIMARY KEY,
+    client_id INT,
+    suggestion_date date,
+    suggestion_text TEXT,
+    status VARCHAR(20), -- e.g., 'Pending', 'In Progress', 'Implemented'
+    FOREIGN KEY (client_id) REFERENCES clients(client_id)
+);
 
+-- Insertion
 -- Inserting the data into the above tables
 -- Insert data into clients table
 INSERT INTO clients (client_id, name, email, Phone, billing_address, account_manager)
@@ -130,6 +154,9 @@ VALUES
 (9, 'Bhaskar''s Mane Holige', 'manager@bmholige.com', '901-234-5678', '890, Chamundi Vihar, Mysuru, Karnataka, 570019', 'Krishnamurthy Shankar'),
 (10, 'Airtel Mysuru', 'manager@airtelmys.com', '012-345-6789', '789, Kuvempu Nagar, Mysuru, Karnataka, 570023', 'Naresh Reddy');
 
+-- check 
+SELECT * FROM clients;
+
 -- Insert data into Campaigns table
 INSERT INTO campaigns (campaign_id, client_id, name, budget, start_date, end_date, creative_director)
 VALUES
@@ -143,6 +170,9 @@ VALUES
 (8, 4, 'Healthcare cards campaign(social media)', 15000.00, '2023-06-01', '2023-07-01', 'Walter White'),
 (9, 5, 'End of Month sale', 11000.00, '2023-05-01', '2023-06-01', 'Sal Peter'),
 (10, 5, '25 years anniversary campaign(social media)', 18000.00, '2023-07-01', '2023-08-01', 'Ashman Joshi');
+
+-- check
+SELECT * FROM campaigns;
 
 -- Insert data into Advertisements table
 INSERT INTO advertisements (advertisement_id, campaign_id, type, content, creative_team)
@@ -158,6 +188,9 @@ VALUES
 (9, 5, 'Youtube/TV Ad', 'https://hask.inc/content/9', 'PixelCraft'),
 (10, 5, 'Social media posts', 'https://hask.inc/content/10', 'PromoPulse');
 
+-- check 
+SELECT * FROM advertisements;
+
 -- Insert data into Employees table
 INSERT INTO employees (employee_id, name, position, email, phone, salary, department)
 VALUES
@@ -171,6 +204,9 @@ VALUES
 (8, 'Vikram Patel', 'Developer', 'vikram.patel@gmail.com', '012-345-6789', 85000.00, 'IT'),
 (9, 'Suman Verma', 'Manager', 'suman.verma@yahoo.com', '123-456-7890', 70000.00, 'Marketing'),
 (10, 'Neha Kapoor', 'Designer', 'neha.kapoor@gmail.com', '234-567-8901', 60000.00, 'Design');
+
+-- check
+SELECT * FROM employees;
 
 -- Insert data into AdvertisementPlacements table
 INSERT INTO advertisement_placements (placement_id, advertisement_id, placement_details, cost, duration)
@@ -186,6 +222,8 @@ VALUES
 (9, 9, 'TV, Youtube- Homepage Takeover', 2500.00, 60),
 (10, 10, 'Online Article - Sponsored content', 1600.00, 30);
 
+-- check
+SELECT * FROM advertisement_placements;
 
 -- Insert data into invoices table
 INSERT INTO invoices (invoice_id, client_id, campaign_id, invoice_date, payment_status, total_amount)
@@ -201,6 +239,9 @@ VALUES
 (9, 5, 9, '2023-06-15', 'Paid', 11000.00),
 (10, 5, 10, '2023-08-15', 'Pending', 18000.00);
 
+-- check
+SELECT * FROM invoices;
+
 -- Insert data payments Payments table
 INSERT INTO Payments (payment_id, invoice_id, employee_id, payment_date, payment_method, transaction_reference)
 VALUES
@@ -214,6 +255,9 @@ VALUES
 (8, 8, 8, '2023-07-20', 'Bank Transfer', 'TRX90123'),
 (9, 9, 9, '2023-06-20', 'Credit Card', 'TRX56789'),
 (10, 10, 10, '2023-08-20', 'Bank Transfer', 'TRX01234');
+
+-- check
+SELECT * FROM Payments;
 
 -- Insert data into VendorSupplierInformation table
 INSERT INTO vendor_supplier_information (vendor_id, vendor_name, contact_info, services_provided, payment_terms)
@@ -229,6 +273,9 @@ VALUES
 (9, 'SEOStrategists', 'seo@gmail.com', 'SEO Services', 'Net 60'),
 (10, 'WordWizards', 'wizards@gmail.com', 'Copywriting', 'Net 30');
 
+-- check
+SELECT * FROM vendor_supplier_information;
+
 -- Insert data into Vendorinvoices table
 INSERT INTO vendor_invoices (invoice_id, payment_id, vendor_id, invoice_date, total_amount, payment_status)
 VALUES
@@ -243,6 +290,9 @@ VALUES
 (9, 9, 9, '2023-06-25', 2500.00, 'Paid'),
 (10, 10, 10, '2023-08-25', 1600.00, 'Pending');
 
+-- check
+SELECT * FROM vendor_invoices;
+
 -- Insert data into PerformanceMetrics table
 INSERT INTO performance_metrics (metric_id, advertisement_id, impressions, clicks, conversions, date)
 VALUES
@@ -256,6 +306,43 @@ VALUES
 (8, 8, 150000, 2500, 150, '2023-05-01'),
 (9, 9, 110000, 1600, 110, '2023-06-01'),
 (10, 10, 180000, 3000, 180, '2023-06-01');
+
+-- check
+SELECT * FROM performance_metrics;
+
+-- Insert data into feedback table
+INSERT INTO feedback (feedback_id, campaign_id, advertisement_id, client_id, employee_id, feedback_date, feedback_text, rating)
+VALUES
+(1, 1, 1, 1, 1, '2023-02-02', 'The billboard design was eye-catching!', 5),
+(2, 1, 2, 1, 2, '2023-02-02', 'Liked the social media posts. Great job!', 4),
+(3, 3, 3, 2, 3, '2023-03-02', 'The newspaper ads were well-placed.', 4),
+(4, 4, 4, 2, 4, '2023-05-02', 'The billboard for our products was effective.', 5),
+(5, 5, 5, 3, 5, '2023-04-02', 'Social media campaign increased our visibility.', 4),
+(6, 6, 6, 3, 6, '2023-06-02', 'The Dosa December campaign was a hit!', 5),
+(7, 7, 7, 4, 7, '2023-05-02', 'Heart Disease Prevention Campaign had a positive impact.', 4),
+(8, 8, 8, 4, 8, '2023-07-02', 'Healthcare cards campaign was well-received.', 5),
+(9, 9, 9, 5, 9, '2023-06-02', 'End of Month sale brought in good sales.', 4),
+(10, 10, 10, 5, 10, '2023-08-02', '25 years anniversary campaign was nostalgic.', 5);
+
+-- CHECK
+SELECT * FROM feedback;
+
+-- Insert data into suggestions table
+INSERT INTO suggestions (suggestion_id, client_id, suggestion_date, suggestion_text, status)
+VALUES
+(1, 1, '2023-02-05', 'Suggest more variations for billboard designs.', 'Pending'),
+(2, 1, '2023-04-05', 'Explore new platforms for advertising.', 'In Progress'),
+(3, 2, '2023-03-05', 'Increase focus on digital advertising.', 'Implemented'),
+(4, 2, '2023-05-05', 'Consider more interactive billboard options.', 'Pending'),
+(5, 3, '2023-04-05', 'Enhance engagement in social media campaigns.', 'In Progress'),
+(6, 3, '2023-06-05', 'Continue themed campaigns for specific months.', 'Implemented'),
+(7, 4, '2023-05-05', 'Explore more health-related campaigns.', 'Pending'),
+(8, 4, '2023-07-05', 'Include health tips in social media posts.', 'In Progress'),
+(9, 5, '2023-06-05', 'Extend the duration of End of Month sale.', 'Implemented'),
+(10, 5, '2023-08-05', 'Continue nostalgic themes in campaigns.', 'Pending');
+
+-- check
+SELECT * FROM suggestions;
 
 -- Retrieve all clients and their respective campaigns
 SELECT clients.name AS client_name, campaigns.name AS campaign_name
@@ -630,11 +717,3 @@ COMMIT;
 -- Check @version against the expected version before updating
 -- UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id = 1 AND version = @version;
 -- COMMIT;
-
-
-
-
-
-
-
-
