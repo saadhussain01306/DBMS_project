@@ -456,7 +456,7 @@ FROM clients
 WHERE client_id IN (SELECT client_id FROM invoices WHERE payment_status = 'Paid');
 
 -- Retrieve the average impressions, clicks, and conversions for each advertisement type
-SELECT type, AVG(impressions) AS avg_impressions, AVG(clicks) AS avg_clicks, AVG(conversions) AS avg_conversions
+SELECT type, COUNT(*) AS count, AVG(impressions) AS avg_impressions, AVG(clicks) AS avg_clicks, AVG(conversions) AS avg_conversions
 FROM advertisements
 JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
 GROUP BY type;
