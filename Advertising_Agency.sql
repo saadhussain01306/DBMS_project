@@ -1071,7 +1071,7 @@ SELECT * FROM campaigns WHERE client_id = 1 FOR UPDATE;
 UPDATE campaigns SET budget = budget + 2000 WHERE client_id = 1;
 COMMIT;
 
-Concurrency control using timestamps: Use a timestamp column to track changes
+-- Concurrency control using timestamps: Use a timestamp column to track changes
 CREATE TABLE campaigns (
     campaign_id INT PRIMARY KEY,
     client_id INT,
