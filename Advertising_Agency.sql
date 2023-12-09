@@ -440,8 +440,36 @@ SELECT * FROM performance_metrics;
 |        10 |               10 |      180000 |   3000 |         180 | 2023-06-01 |
 +-----------+------------------+-------------+--------+-------------+------------+
     
+INSERT INTO contact_us (name, email, message) VALUES
+('John Doe', 'john.doe@gmail.com', 'I have a question about the Shoes Billboard campaign.'),
+('Alice Smith', 'alice.smith@gmail.com', 'Interested in the Haldirams End Of Month Sale.'),
+('Bob Johnson', 'bob.johnson@gmail.com', 'I wanted to provide feedback on the Products billboard.'),
+('Eva Brown', 'eva.brown@gmail.com', 'Inquiry about the Delicious Dosa December Campaign.'),
+('David White', 'david.white@gmail.com', 'Looking for collaboration opportunities in the healthcare sector.'),
+('Emma Davis', 'emma.davis@gmail.com', 'Complaint about the advertisement placement on social media.'),
+('Michael Wilson', 'michael.wilson@gmail.com', 'Suggestions for improving the Heart Disease Prevention Campaign.'),
+('Sophia Miller', 'sophia.miller@gmail.com', 'Feedback on the End of Month sale campaign.'),
+('Daniel Lee', 'daniel.lee@gmail.com', 'I have a suggestion for enhancing your advertising strategies.'),
+('Olivia Turner', 'olivia.turner@gmail.com', 'Greetings! Your team''s creativity in the 25 years anniversary campaign is impressive.');
 
+-- check
     
+SELECT * FROM contact_us;
++----------------+--------------------------+---------------------------------------------------------------------------------------+
+| name           | email                    | message                                                                               |
++----------------+--------------------------+---------------------------------------------------------------------------------------+
+| John Doe       | john.doe@gmail.com       | I have a question about the Shoes Billboard campaign.                                 |
+| Alice Smith    | alice.smith@gmail.com    | Interested in the Haldirams End Of Month Sale.                                        |
+| Bob Johnson    | bob.johnson@gmail.com    | I wanted to provide feedback on the Products billboard.                               |
+| Eva Brown      | eva.brown@gmail.com      | Inquiry about the Delicious Dosa December Campaign.                                   |
+| David White    | david.white@gmail.com    | Looking for collaboration opportunities in the healthcare sector.                     |
+| Emma Davis     | emma.davis@gmail.com     | Complaint about the advertisement placement on social media.                          |
+| Michael Wilson | michael.wilson@gmail.com | Suggestions for improving the Heart Disease Prevention Campaign.                      |
+| Sophia Miller  | sophia.miller@gmail.com  | Feedback on the End of Month sale campaign.                                           |
+| Daniel Lee     | daniel.lee@gmail.com     | I have a suggestion for enhancing your advertising strategies.                        |
+| Olivia Turner  | olivia.turner@gmail.com  | Greetings! Your team's creativity in the 25 years anniversary campaign is impressive. |
++----------------+--------------------------+---------------------------------------------------------------------------------------+
+   
 -- Retrieve all clients and their respective campaigns
 SELECT clients.name AS client_name, campaigns.name AS campaign_name
 FROM clients
@@ -663,6 +691,20 @@ WHERE payment_status = 'Pending' AND invoice_date <= CURDATE();
 -- curdate not working please check once
 
 -- BEFORE TABLE
++------------+-----------+-------------+--------------+----------------+--------------+
+| invoice_id | client_id | campaign_id | invoice_date | payment_status | total_amount |
++------------+-----------+-------------+--------------+----------------+--------------+
+|          1 |         1 |           1 | 2023-02-15   | Paid           |      5000.00 |
+|          2 |         1 |           2 | 2023-04-15   | Pending        |      8000.00 |
+|          3 |         2 |           3 | 2023-03-15   | Paid           |      6000.00 |
+|          4 |         2 |           4 | 2023-05-15   | Pending        |      7000.00 |
+|          5 |         3 |           5 | 2023-04-15   | Paid           |      9000.00 |
+|          6 |         3 |           6 | 2023-06-15   | Pending        |     12000.00 |
+|          7 |         4 |           7 | 2023-05-15   | Paid           |     10000.00 |
+|          8 |         4 |           8 | 2023-07-15   | Pending        |     15000.00 |
+|          9 |         5 |           9 | 2023-06-15   | Paid           |     11000.00 |
+|         10 |         5 |          10 | 2023-08-15   | Pending        |     18000.00 |
++------------+-----------+-------------+--------------+----------------+--------------+
 
 -- AFTER TABLE
 +------------+-----------+-------------+--------------+----------------+--------------+
@@ -680,28 +722,71 @@ WHERE payment_status = 'Pending' AND invoice_date <= CURDATE();
 |         10 |         5 |          10 | 2023-08-15   | Paid           |     18000.00 |
 +------------+-----------+-------------+--------------+----------------+--------------+
 
-
 -- Delete advertisements with zero impressions
 DELETE FROM advertisements
 WHERE advertisement_id IN (SELECT advertisement_id FROM performance_metrics WHERE impressions = 0);
 
---Retrieve the vendors who have provided services with payment terms longer than 'Net 30'
+-- Retrieve the vendors who have provided services with payment terms longer than 'Net 30'
 SELECT vendor_name
 FROM vendor_supplier_information
 WHERE payment_terms > 'Net 30';
++----------------------+
+| vendor_name          |
++----------------------+
+| VisionaryProductions |
+| DataInsightsCo       |
+| SocialBuzzPromo      |
+| contentCrafters      |
+| EditExpress          |
+| SEOStrategists       |
++----------------------+
 
 -- Calculate the average budget for campaigns managed by each account manager
 SELECT account_manager, AVG(budget) AS avg_budget
 FROM clients
 JOIN campaigns ON clients.client_id = campaigns.client_id
 GROUP BY account_manager;
++-----------------+--------------+
+| account_manager | avg_budget   |
++-----------------+--------------+
+| Rahul Shah      |  6500.000000 |
+| Rohit Gowda     |  6500.000000 |
+| Arman Singh     | 10500.000000 |
+| Bhaskar Jain    | 12500.000000 |
+| Rohini Bhat     | 14500.000000 |
++-----------------+--------------+
 
 -- Retrieve the top-performing advertisement (highest number of clicks) for each campaign
-SELECT campaigns.name AS campaign_name, advertisements.type, advertisements.content, MAX(performance_metrics.clicks) AS max_clicks
-FROM campaigns
-JOIN advertisements ON campaigns.campaign_id = advertisements.campaign_id
-JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
-GROUP BY campaigns.campaign_id;
+SELECT
+    campaigns.name AS campaign_name,
+    advertisements.type,
+    advertisements.content,
+    MAX(performance_metrics.clicks) AS max_clicks
+FROM
+    campaigns
+JOIN
+    advertisements ON campaigns.campaign_id = advertisements.campaign_id
+JOIN
+    performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
+GROUP BY
+    campaigns.campaign_id,
+    campaigns.name,
+    advertisements.type,
+    advertisements.content;
++-------------------------------+--------------------------+-----------------------------+------------+
+| campaign_name                 | type                     | content                     | max_clicks |
++-------------------------------+--------------------------+-----------------------------+------------+
+| Shoes Billboard               | Billboard                | https://hask.inc/content/1  |       1000 |
+| Shoes Billboard               | Social media posts       | https://hask.inc/content/2  |       1200 |
+| Jerseys Social Media Campaign | Newspaper Ads            | https://hask.inc/content/3  |        800 |
+| Jerseys Social Media Campaign | Billboard                | https://hask.inc/content/4  |       1500 |
+| Haldirams End Of Month Sale   | Social media posts       | https://hask.inc/content/5  |       1800 |
+| Haldirams End Of Month Sale   | Newspaper Ads/Banners    | https://hask.inc/content/6  |       2000 |
+| Products billboard            | Billboards/Newspaper Ads | https://hask.inc/content/7  |       1300 |
+| Products billboard            | Social media posts       | https://hask.inc/content/8  |       2500 |
+| Social media campaign         | Youtube/TV Ad            | https://hask.inc/content/9  |       1600 |
+| Social media campaign         | Social media posts       | https://hask.inc/content/10 |       3000 |
++-------------------------------+--------------------------+-----------------------------+------------+
 
 -- Find the client with the highest total expenditure (sum of campaign budgets)
 SELECT clients.name AS client_name, SUM(campaigns.budget) AS total_expenditure
@@ -710,6 +795,11 @@ JOIN campaigns ON clients.client_id = campaigns.client_id
 GROUP BY clients.client_id
 ORDER BY total_expenditure DESC
 LIMIT 1;
++--------------------------------+-------------------+
+| client_name                    | total_expenditure |
++--------------------------------+-------------------+
+| Loyal World Supermarket Mysuru |          29000.00 |
++--------------------------------+-------------------+
 
 -- Retrieve the employees who have not made any payments
 SELECT employees.name AS employee_name
@@ -717,12 +807,28 @@ FROM employees
 LEFT JOIN payments ON employees.employee_id = payments.employee_id
 WHERE payments.employee_id IS NULL;
 
+Empty set (0.00 sec)
+
 -- Calculate the total revenue and total cost for each campaign
 SELECT campaigns.name AS campaign_name, SUM(invoices.total_amount) AS total_revenue, SUM(advertisement_placements.cost) AS total_cost
 FROM campaigns
 LEFT JOIN invoices ON campaigns.campaign_id = invoices.campaign_id
 LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_placements.advertisement_id
 GROUP BY campaigns.campaign_id;
++---------------------------------------------+---------------+------------+
+| campaign_name                               | total_revenue | total_cost |
++---------------------------------------------+---------------+------------+
+| Shoes Billboard                             |       5000.00 |    1000.00 |
+| Jerseys Social Media Campaign               |       8000.00 |     800.00 |
+| Haldirams End Of Month Sale                 |       6000.00 |    1200.00 |
+| Products billboard                          |       7000.00 |    1500.00 |
+| Social media campaign                       |       9000.00 |    2000.00 |
+| Delicious Dosa December Campaign            |      12000.00 |    1800.00 |
+| Heart Disease Prrevention Campaign(Offline) |      10000.00 |     900.00 |
+| Healthcare cards campaign(social media)     |      15000.00 |    1300.00 |
+| End of Month sale                           |      11000.00 |    2500.00 |
+| 25 years anniversary campaign(social media) |      18000.00 |    1600.00 |
++---------------------------------------------+---------------+------------+
 
 -- Retrieve the campaigns that have exceeded their budget by more than 20%
 SELECT campaigns.name AS campaign_name, campaigns.budget, SUM(advertisement_placements.cost) AS total_cost
@@ -772,6 +878,23 @@ JOIN advertisements a ON ap.advertisement_id = a.advertisement_id
 JOIN campaigns c ON a.campaign_id = c.campaign_id
 JOIN clients cl ON c.client_id = cl.client_id;
 
+-- check this view
+SELECT * FROM vw_ad_placement_details;
++--------------+------------------+--------------------------------------+---------+----------+-------------------------------+---------------------------------+
+| placement_id | advertisement_id | placement_details                    | cost    | duration | campaign_name                 | client_name                     |
++--------------+------------------+--------------------------------------+---------+----------+-------------------------------+---------------------------------+
+|            1 |                1 | Billboard - Top Location             | 1000.00 |       30 | Shoes Billboard               | Nike India                      |
+|            2 |                2 | Social Media - Sidebar Promotion     |  800.00 |       15 | Shoes Billboard               | Nike India                      |
+|            3 |                3 | Newspaper - Homepage Feature         | 1200.00 |       45 | Jerseys Social Media Campaign | Nike India                      |
+|            4 |                4 | Billboard - Video Pre-roll           | 1500.00 |       60 | Jerseys Social Media Campaign | Nike India                      |
+|            5 |                5 | Social Media - Featured Ad Placement | 2000.00 |       30 | Haldirams End Of Month Sale   | Haldiram Snacks Private Limited |
+|            6 |                6 | Newspaper - Social Media Promo       | 1800.00 |       30 | Haldirams End Of Month Sale   | Haldiram Snacks Private Limited |
+|            7 |                7 | Billboard - In-article Banner        |  900.00 |       20 | Products billboard            | Haldiram Snacks Private Limited |
+|            8 |                8 | Social Media - Video Ad Overlay      | 1300.00 |       45 | Products billboard            | Haldiram Snacks Private Limited |
+|            9 |                9 | TV, Youtube- Homepage Takeover       | 2500.00 |       60 | Social media campaign         | A2B Restaurants                 |
+|           10 |               10 | Online Article - Sponsored content   | 1600.00 |       30 | Social media campaign         | A2B Restaurants                 |
++--------------+------------------+--------------------------------------+---------+----------+-------------------------------+---------------------------------+
+
 -- View to show the total payments made by each client
 CREATE VIEW vw_total_payments_by_client AS
 SELECT
@@ -781,6 +904,23 @@ SELECT
 FROM clients c
 LEFT JOIN invoices i ON c.client_id = i.client_id
 GROUP BY c.client_id;
+
+-- check this view
+SELECT * FROM vw_total_payments_by_client;
++-----------+---------------------------------+----------------+
+| client_id | client_name                     | total_payments |
++-----------+---------------------------------+----------------+
+|         1 | Nike India                      |       13000.00 |
+|         2 | Haldiram Snacks Private Limited |       13000.00 |
+|         3 | A2B Restaurants                 |       21000.00 |
+|         4 | Manipal Hospitals               |       25000.00 |
+|         5 | Loyal World Supermarket Mysuru  |       29000.00 |
+|         6 | Vishal Mart Mysuru              |           NULL |
+|         7 | DMart Bengaluru                 |           NULL |
+|         8 | Dosa Point                      |           NULL |
+|         9 | Bhaskar's Mane Holige           |           NULL |
+|        10 | Airtel Mysuru                   |           NULL |
++-----------+---------------------------------+----------------+
 
 -- Trigger to update the total budget of a campaign when a new advertisement placement is added
 CREATE TRIGGER trg_update_campaign_budget
@@ -825,6 +965,23 @@ FROM performance_metrics pm
 JOIN advertisements a ON pm.advertisement_id = a.advertisement_id
 JOIN campaigns c ON a.campaign_id = c.campaign_id
 JOIN clients cl ON c.client_id = cl.client_id;
+    
+-- check this view
+SELECT * FROM vw_performance_metrics_extended;
++-----------+------------------+-------------+--------+-------------+------------+--------------------------+-----------------------------+-------------------------------+---------------------------------+-----------------+
+| metric_id | advertisement_id | impressions | clicks | conversions | date       | advertisement_type       | advertisement_content       | campaign_name                 | client_name                     | conversion_rate |
++-----------+------------------+-------------+--------+-------------+------------+--------------------------+-----------------------------+-------------------------------+---------------------------------+-----------------+
+|         1 |                1 |       50000 |   1000 |          50 | 2023-02-01 | Billboard                | https://hask.inc/content/1  | Shoes Billboard               | Nike India                      |          5.0000 |
+|         2 |                2 |       70000 |   1200 |          70 | 2023-02-01 | Social media posts       | https://hask.inc/content/2  | Shoes Billboard               | Nike India                      |          5.8333 |
+|         3 |                3 |       60000 |    800 |          40 | 2023-03-01 | Newspaper Ads            | https://hask.inc/content/3  | Jerseys Social Media Campaign | Nike India                      |          5.0000 |
+|         4 |                4 |       80000 |   1500 |          80 | 2023-03-01 | Billboard                | https://hask.inc/content/4  | Jerseys Social Media Campaign | Nike India                      |          5.3333 |
+|         5 |                5 |       90000 |   1800 |          90 | 2023-04-01 | Social media posts       | https://hask.inc/content/5  | Haldirams End Of Month Sale   | Haldiram Snacks Private Limited |          5.0000 |
+|         6 |                6 |      120000 |   2000 |         120 | 2023-04-01 | Newspaper Ads/Banners    | https://hask.inc/content/6  | Haldirams End Of Month Sale   | Haldiram Snacks Private Limited |          6.0000 |
+|         7 |                7 |      100000 |   1300 |         100 | 2023-05-01 | Billboards/Newspaper Ads | https://hask.inc/content/7  | Products billboard            | Haldiram Snacks Private Limited |          7.6923 |
+|         8 |                8 |      150000 |   2500 |         150 | 2023-05-01 | Social media posts       | https://hask.inc/content/8  | Products billboard            | Haldiram Snacks Private Limited |          6.0000 |
+|         9 |                9 |      110000 |   1600 |         110 | 2023-06-01 | Youtube/TV Ad            | https://hask.inc/content/9  | Social media campaign         | A2B Restaurants                 |          6.8750 |
+|        10 |               10 |      180000 |   3000 |         180 | 2023-06-01 | Social media posts       | https://hask.inc/content/10 | Social media campaign         | A2B Restaurants                 |          6.0000 |
++-----------+------------------+-------------+--------+-------------+------------+--------------------------+-----------------------------+-------------------------------+---------------------------------+-----------------+
 
 -- View to show the total amount paid and pending for each campaign
 CREATE VIEW vw_campaign_payment_status AS
@@ -836,6 +993,20 @@ SELECT
 FROM campaigns c
 LEFT JOIN invoices i ON c.campaign_id = i.campaign_id
 GROUP BY c.campaign_id;
++-------------+---------------------------------------------+-------------------+----------------+
+| campaign_id | campaign_name                               | total_amount_paid | amount_pending |
++-------------+---------------------------------------------+-------------------+----------------+
+|           1 | Shoes Billboard                             |           5000.00 |           0.00 |
+|           2 | Jerseys Social Media Campaign               |           8000.00 |           0.00 |
+|           3 | Haldirams End Of Month Sale                 |           6000.00 |           0.00 |
+|           4 | Products billboard                          |           7000.00 |           0.00 |
+|           5 | Social media campaign                       |           9000.00 |           0.00 |
+|           6 | Delicious Dosa December Campaign            |          12000.00 |           0.00 |
+|           7 | Heart Disease Prrevention Campaign(Offline) |          10000.00 |           0.00 |
+|           8 | Healthcare cards campaign(social media)     |          15000.00 |           0.00 |
+|           9 | End of Month sale                           |          11000.00 |           0.00 |
+|          10 | 25 years anniversary campaign(social media) |          18000.00 |           0.00 |
++-------------+---------------------------------------------+-------------------+----------------+
 
 -- Complex Triggers
 -- Trigger to update the total amount and payment status when a new invoice is added
@@ -901,33 +1072,33 @@ SELECT * FROM campaigns WHERE client_id = 1 FOR UPDATE;
 UPDATE campaigns SET budget = budget + 2000 WHERE client_id = 1;
 COMMIT;
 
--- Concurrency control using timestamps: Use a timestamp column to track changes
--- CREATE TABLE campaigns (
---     campaign_id INT PRIMARY KEY,
---     client_id INT,
---     name VARCHAR(255),
---     budget DECIMAL(10, 2),
---     start_date date,
---     end_date date,
---     creative_director VARCHAR(255),
---     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
--- );
+Concurrency control using timestamps: Use a timestamp column to track changes
+CREATE TABLE campaigns (
+    campaign_id INT PRIMARY KEY,
+    client_id INT,
+    name VARCHAR(255),
+    budget DECIMAL(10, 2),
+    start_date date,
+    end_date date,
+    creative_director VARCHAR(255),
+    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
--- Use a version column for optimistic concurrency control
--- CREATE TABLE campaigns (
---     campaign_id INT PRIMARY KEY,
---     client_id INT,
---     name VARCHAR(255),
---     budget DECIMAL(10, 2),
---     start_date date,
---     end_date date,
---     creative_director VARCHAR(255),
---     version INT DEFAULT 1
--- );
---  
---  -- Check for conflicts before updating
--- START TRANSACTION;
--- SELECT version INTO @version FROM campaigns WHERE campaign_id = 1;
--- Check @version against the expected version before updating
--- UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id = 1 AND version = @version;
--- COMMIT;
+Use a version column for optimistic concurrency control
+CREATE TABLE campaigns (
+    campaign_id INT PRIMARY KEY,
+    client_id INT,
+    name VARCHAR(255),
+    budget DECIMAL(10, 2),
+    start_date date,
+    end_date date,
+    creative_director VARCHAR(255),
+    version INT DEFAULT 1
+);
+ 
+ -- Check for conflicts before updating
+START TRANSACTION;
+SELECT version INTO @version FROM campaigns WHERE campaign_id = 1;
+Check @version against the expected version before updating
+UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id = 1 AND version = @version;
+COMMIT;
