@@ -113,30 +113,12 @@ CREATE TABLE performance_metrics (
     FOREIGN KEY (advertisement_id) REFERENCES advertisements(advertisement_id)
 );
 
--- Create feedback table
-CREATE TABLE feedback (
-    feedback_id INT PRIMARY KEY,
-    campaign_id INT,
-    advertisement_id INT,
-    client_id INT,
-    employee_id INT,
-    feedback_date date,
-    feedback_text TEXT,
-    rating FLOAT, 
-    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
-    FOREIGN KEY (advertisement_id) REFERENCES advertisements(advertisement_id),
-    FOREIGN KEY (client_id) REFERENCES clients(client_id),
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
-
--- Create suggestions table
-CREATE TABLE suggestions (
-    suggestion_id INT PRIMARY KEY,
-    client_id INT,
-    suggestion_date date,
-    suggestion_text TEXT,
-    status VARCHAR(20), -- e.g., 'Pending', 'In Progress', 'Implemented'
-    FOREIGN KEY (client_id) REFERENCES clients(client_id)
+-- Create contact_us table
+CREATE TABLE contact_us (
+    contact_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    message TEXT
 );
 
 -- Insertion
@@ -458,67 +440,7 @@ SELECT * FROM performance_metrics;
 |        10 |               10 |      180000 |   3000 |         180 | 2023-06-01 |
 +-----------+------------------+-------------+--------+-------------+------------+
     
--- Insert data into feedback table
-INSERT INTO feedback (feedback_id, campaign_id, advertisement_id, client_id, employee_id, feedback_date, feedback_text, rating)
-VALUES
-(1, 1, 1, 1, 1, '2023-02-02', 'The billboard design was eye-catching!', 5),
-(2, 1, 2, 1, 2, '2023-02-02', 'Liked the social media posts. Great job!', 4),
-(3, 3, 3, 2, 3, '2023-03-02', 'The newspaper ads were well-placed.', 4),
-(4, 4, 4, 2, 4, '2023-05-02', 'The billboard for our products was effective.', 5),
-(5, 5, 5, 3, 5, '2023-04-02', 'Social media campaign increased our visibility.', 4),
-(6, 6, 6, 3, 6, '2023-06-02', 'The Dosa December campaign was a hit!', 5),
-(7, 7, 7, 4, 7, '2023-05-02', 'Heart Disease Prevention Campaign had a positive impact.', 4),
-(8, 8, 8, 4, 8, '2023-07-02', 'Healthcare cards campaign was well-received.', 5),
-(9, 9, 9, 5, 9, '2023-06-02', 'End of Month sale brought in good sales.', 4),
-(10, 10, 10, 5, 10, '2023-08-02', '25 years anniversary campaign was nostalgic.', 5);
 
--- CHECK
-SELECT * FROM feedback;
-+-------------+-------------+------------------+-----------+-------------+---------------+----------------------------------------------------------+--------+
-| feedback_id | campaign_id | advertisement_id | client_id | employee_id | feedback_date | feedback_text                                            | rating |
-+-------------+-------------+------------------+-----------+-------------+---------------+----------------------------------------------------------+--------+
-|           1 |           1 |                1 |         1 |           1 | 2023-02-02    | The billboard design was eye-catching!                   |      5 |
-|           2 |           1 |                2 |         1 |           2 | 2023-02-02    | Liked the social media posts. Great job!                 |      4 |
-|           3 |           3 |                3 |         2 |           3 | 2023-03-02    | The newspaper ads were well-placed.                      |      4 |
-|           4 |           4 |                4 |         2 |           4 | 2023-05-02    | The billboard for our products was effective.            |      5 |
-|           5 |           5 |                5 |         3 |           5 | 2023-04-02    | Social media campaign increased our visibility.          |      4 |
-|           6 |           6 |                6 |         3 |           6 | 2023-06-02    | The Dosa December campaign was a hit!                    |      5 |
-|           7 |           7 |                7 |         4 |           7 | 2023-05-02    | Heart Disease Prevention Campaign had a positive impact. |      4 |
-|           8 |           8 |                8 |         4 |           8 | 2023-07-02    | Healthcare cards campaign was well-received.             |      5 |
-|           9 |           9 |                9 |         5 |           9 | 2023-06-02    | End of Month sale brought in good sales.                 |      4 |
-|          10 |          10 |               10 |         5 |          10 | 2023-08-02    | 25 years anniversary campaign was nostalgic.             |      5 |
-+-------------+-------------+------------------+-----------+-------------+---------------+----------------------------------------------------------+--------+
-
--- Insert data into suggestions table
-INSERT INTO suggestions (suggestion_id, client_id, suggestion_date, suggestion_text, status)
-VALUES
-(1, 1, '2023-02-05', 'Suggest more variations for billboard designs.', 'Pending'),
-(2, 1, '2023-04-05', 'Explore new platforms for advertising.', 'In Progress'),
-(3, 2, '2023-03-05', 'Increase focus on digital advertising.', 'Implemented'),
-(4, 2, '2023-05-05', 'Consider more interactive billboard options.', 'Pending'),
-(5, 3, '2023-04-05', 'Enhance engagement in social media campaigns.', 'In Progress'),
-(6, 3, '2023-06-05', 'Continue themed campaigns for specific months.', 'Implemented'),
-(7, 4, '2023-05-05', 'Explore more health-related campaigns.', 'Pending'),
-(8, 4, '2023-07-05', 'Include health tips in social media posts.', 'In Progress'),
-(9, 5, '2023-06-05', 'Extend the duration of End of Month sale.', 'Implemented'),
-(10, 5, '2023-08-05', 'Continue nostalgic themes in campaigns.', 'Pending');
-
--- check
-SELECT * FROM suggestions;
-+---------------+-----------+-----------------+------------------------------------------------+-------------+
-| suggestion_id | client_id | suggestion_date | suggestion_text                                | status      |
-+---------------+-----------+-----------------+------------------------------------------------+-------------+
-|             1 |         1 | 2023-02-05      | Suggest more variations for billboard designs. | Pending     |
-|             2 |         1 | 2023-04-05      | Explore new platforms for advertising.         | In Progress |
-|             3 |         2 | 2023-03-05      | Increase focus on digital advertising.         | Implemented |
-|             4 |         2 | 2023-05-05      | Consider more interactive billboard options.   | Pending     |
-|             5 |         3 | 2023-04-05      | Enhance engagement in social media campaigns.  | In Progress |
-|             6 |         3 | 2023-06-05      | Continue themed campaigns for specific months. | Implemented |
-|             7 |         4 | 2023-05-05      | Explore more health-related campaigns.         | Pending     |
-|             8 |         4 | 2023-07-05      | Include health tips in social media posts.     | In Progress |
-|             9 |         5 | 2023-06-05      | Extend the duration of End of Month sale.      | Implemented |
-|            10 |         5 | 2023-08-05      | Continue nostalgic themes in campaigns.        | Pending     |
-+---------------+-----------+-----------------+------------------------------------------------+-------------+
     
 -- Retrieve all clients and their respective campaigns
 SELECT clients.name AS client_name, campaigns.name AS campaign_name
