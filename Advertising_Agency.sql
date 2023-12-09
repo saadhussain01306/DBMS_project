@@ -115,9 +115,8 @@ CREATE TABLE performance_metrics (
 
 -- Create contact_us table
 CREATE TABLE contact_us (
-    contact_id INT PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255),
+    email VARCHAR(255) PRIMARY KEY,
     message TEXT
 );
 
