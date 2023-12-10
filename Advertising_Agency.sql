@@ -1,6 +1,6 @@
 -- Create the database Advertising_company
-CREATE DATABASE Advertising_company;
-USE Advertising_company;
+CREATE DATABASE advertising_agency;
+USE advertising_agency;
 
 
 -- Create clients table
@@ -120,6 +120,15 @@ CREATE TABLE contact_us (
     message TEXT
 );
 
+CREATE TABLE clients_backup (
+    client_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(15),
+    billing_address VARCHAR(255),
+    account_manager VARCHAR(255)
+);
+
 -- Insertion
 -- Inserting the data into the above tables
 -- Insert data into clients table
@@ -149,7 +158,7 @@ SELECT * FROM clients;
 |         6 | Vishal Mart Mysuru              | manager@vishalmartmys.com | 678-901-2345 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Radha Shenoy          |
 |         7 | DMart Bengaluru                 | manager@dmartblr.com      | 789-012-3456 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Raghav Sharma         |
 |         8 | Dosa Point                      | manager@dosapoint.com     | 890-123-4567 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Madhav Ullas          |
-|         9 | Bhaskar's Mane Holige           | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
+|         9 | Bhaskars Mane Holige           | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
 |        10 | Airtel Mysuru                   | manager@airtelmys.com     | 012-345-6789 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Naresh Reddy          |
 +-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
 
@@ -466,7 +475,7 @@ SELECT * FROM contact_us;
 | Michael Wilson | michael.wilson@gmail.com | Suggestions for improving the Heart Disease Prevention Campaign.                      |
 | Sophia Miller  | sophia.miller@gmail.com  | Feedback on the End of Month sale campaign.                                           |
 | Daniel Lee     | daniel.lee@gmail.com     | I have a suggestion for enhancing your advertising strategies.                        |
-| Olivia Turner  | olivia.turner@gmail.com  | Greetings! Your team's creativity in the 25 years anniversary campaign is impressive. |
+| Olivia Turner  | olivia.turner@gmail.com  | Greetings! Your teams creativity in the 25 years anniversary campaign is impressive. |
 +----------------+--------------------------+---------------------------------------------------------------------------------------+
    
 -- Retrieve all clients and their respective campaigns
@@ -917,10 +926,41 @@ SELECT * FROM vw_total_payments_by_client;
 |         6 | Vishal Mart Mysuru              |           NULL |
 |         7 | DMart Bengaluru                 |           NULL |
 |         8 | Dosa Point                      |           NULL |
-|         9 | Bhaskar's Mane Holige           |           NULL |
+|         9 | Bhaskars Mane Holige           |           NULL |
 |        10 | Airtel Mysuru                   |           NULL |
 +-----------+---------------------------------+----------------+
 
+-- Complex Triggers
+-- Trigger to update the total amount and payment status when a new invoice is added
+DELIMITER //
+CREATE TRIGGER trg_update_campaign_payment_status
+AFTER INSERT ON invoices
+FOR EACH ROW
+BEGIN
+    UPDATE vw_campaign_payment_status cps
+    SET cps.total_amount_paid = cps.total_amount_paid + NEW.total_amount,
+        cps.amount_pending = cps.amount_pending - NEW.total_amount
+    WHERE cps.campaign_id = NEW.campaign_id;
+END;
+//
+-- Trigger to prevent deleting clients with active campaigns
+CREATE TRIGGER trg_prevent_delete_client
+BEFORE DELETE ON clients
+FOR EACH ROW
+BEGIN
+    DECLARE campaign_count INT;
+
+    SELECT COUNT(*)
+    INTO campaign_count
+    FROM campaigns
+    WHERE client_id = OLD.client_id;
+
+    IF campaign_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot delete client with active campaigns.';
+    END IF;
+END;
+//
 -- Trigger to update the total budget of a campaign when a new advertisement placement is added
 CREATE TRIGGER trg_update_campaign_budget
 AFTER INSERT ON advertisement_placements
@@ -930,7 +970,7 @@ BEGIN
     SET budget = budget + NEW.cost
     WHERE campaign_id = (SELECT campaign_id FROM advertisements WHERE advertisement_id = NEW.advertisement_id);
 END;
-
+//
 -- Trigger to enforce a constraint on the maximum duration of an advertisement placement
 CREATE TRIGGER trg_check_duration
 BEFORE INSERT ON advertisement_placements
@@ -944,6 +984,49 @@ BEGIN
         SET MESSAGE_TEXT = 'Duration exceeds the maximum allowed duration.';
     END IF;
 END;
+//
+DELIMITER ;
+
+-- Pushing Data into backup table trigger
+-- Create Trigger
+DELIMITER //
+CREATE TRIGGER clients_insert_update_trigger
+AFTER INSERT ON clients
+FOR EACH ROW
+BEGIN
+    -- Insert into clients_backup table
+    INSERT INTO clients_backup
+    VALUES (NEW.client_id, NEW.name, NEW.email, NEW.phone, NEW.billing_address, NEW.account_manager);
+END;
+//
+CREATE TRIGGER clients_update_trigger
+AFTER UPDATE ON clients
+FOR EACH ROW
+BEGIN
+    -- Update clients_backup table
+    UPDATE clients_backup
+    SET
+        name = NEW.name,
+        email = NEW.email,
+        phone = NEW.phone,
+        billing_address = NEW.billing_address,
+        account_manager = NEW.account_manager
+    WHERE client_id = NEW.client_id;
+END;
+//
+DELIMITER ;
+
+-- Create Trigger
+DELIMITER //
+CREATE TRIGGER capitalize_name_trigger
+BEFORE INSERT ON clients
+FOR EACH ROW
+BEGIN
+    -- Capitalize the first letter of the name
+    SET NEW.name = CONCAT(UPPER(SUBSTRING(NEW.name, 1, 1)), SUBSTRING(NEW.name, 2));
+END;
+//
+DELIMITER ;
 
 -- Complex Views:
 -- View to display performance metrics with additional calculated fields
@@ -1007,35 +1090,6 @@ GROUP BY c.campaign_id;
 |          10 | 25 years anniversary campaign(social media) |          18000.00 |           0.00 |
 +-------------+---------------------------------------------+-------------------+----------------+
 
--- Complex Triggers
--- Trigger to update the total amount and payment status when a new invoice is added
-CREATE TRIGGER trg_update_campaign_payment_status
-AFTER INSERT ON invoices
-FOR EACH ROW
-BEGIN
-    UPDATE vw_campaign_payment_status cps
-    SET cps.total_amount_paid = cps.total_amount_paid + NEW.total_amount,
-        cps.amount_pending = cps.amount_pending - NEW.total_amount
-    WHERE cps.campaign_id = NEW.campaign_id;
-END;
-
--- Trigger to prevent deleting clients with active campaigns
-CREATE TRIGGER trg_prevent_delete_client
-BEFORE DELETE ON clients
-FOR EACH ROW
-BEGIN
-    DECLARE campaign_count INT;
-
-    SELECT COUNT(*)
-    INTO campaign_count
-    FROM campaigns
-    WHERE client_id = OLD.client_id;
-
-    IF campaign_count > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Cannot delete client with active campaigns.';
-    END IF;
-END;
 
 -- Indexes
 CREATE INDEX idx_clients_email ON clients(email);
@@ -1072,18 +1126,18 @@ UPDATE campaigns SET budget = budget + 2000 WHERE client_id = 1;
 COMMIT;
 
 -- Concurrency control using timestamps: Use a timestamp column to track changes
-CREATE TABLE campaigns (
-    campaign_id INT PRIMARY KEY,
-    client_id INT,
-    name VARCHAR(255),
-    budget DECIMAL(10, 2),
-    start_date date,
-    end_date date,
-    creative_director VARCHAR(255),
-    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+-- CREATE TABLE campaigns (
+--     campaign_id INT PRIMARY KEY,
+--     client_id INT,
+--     name VARCHAR(255),
+--     budget DECIMAL(10, 2),
+--     start_date date,
+--     end_date date,
+--     creative_director VARCHAR(255),
+--     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- );
 
-Use a version column for optimistic concurrency control
+-- Use a version column for optimistic concurrency control
 CREATE TABLE campaigns (
     campaign_id INT PRIMARY KEY,
     client_id INT,
@@ -1102,21 +1156,4 @@ Check @version against the expected version before updating
 UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id = 1 AND version = @version;
 COMMIT;
 
--- Create a backup table for the campaigns table
-CREATE TABLE campaigns_backup AS
-SELECT * FROM campaigns;
-
--- Trigger to update the total budget of a campaign when a new advertisement placement is added
-CREATE TRIGGER trg_update_campaign_budget
-AFTER INSERT ON advertisement_placements
-FOR EACH ROW
-BEGIN
-    -- Backup the current state of the campaigns table
-    INSERT INTO campaigns_backup
-    SELECT * FROM campaigns;
-
-    -- Update the campaigns table with the new budget
-    UPDATE campaigns
-    SET budget = budget + NEW.cost
-    WHERE campaign_id = (SELECT campaign_id FROM advertisements WHERE advertisement_id = NEW.advertisement_id);
-END;
+-- Stored procedures 
