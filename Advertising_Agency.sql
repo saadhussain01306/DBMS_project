@@ -1157,3 +1157,219 @@ UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id =
 COMMIT;
 
 -- Stored procedures 
+
+-- Retrieve the total budget spent on campaigns
+DELIMITER //
+
+CREATE PROCEDURE GetTotalBudgetSpent()
+BEGIN
+    SELECT SUM(budget) AS total_budget_spent
+    FROM campaigns;
+END //
+
+DELIMITER ;
+
+-- Categorizing the campaigns based on the budget
+DELIMITER //
+
+CREATE PROCEDURE GetBudgetCategories()
+BEGIN
+    SELECT
+        CASE
+            WHEN budget < 6000 THEN 'Less than 6000'
+            WHEN budget BETWEEN 6000 AND 12000 THEN 'Between 6000 and 12000'
+            WHEN budget > 12000 THEN '12000 and more'
+            ELSE 'Uncategorized'
+        END AS budget_category,
+        COUNT(*) AS campaign_count
+    FROM campaigns
+    GROUP BY budget_category;
+END //
+
+DELIMITER ;
+
+-- Retrieve the total revenue from invoices
+DELIMITER //
+
+CREATE PROCEDURE GetTotalRevenue()
+BEGIN
+    SELECT SUM(total_amount) AS total_revenue
+    FROM invoices;
+END //
+
+DELIMITER ;
+
+-- Group invoices based on the quarter
+DELIMITER //
+
+CREATE PROCEDURE GroupInvoicesByQuarter()
+BEGIN
+    SELECT
+        EXTRACT(QUARTER FROM invoice_date) AS quarter,
+        COUNT(*) AS num_invoices,
+        SUM(total_amount) AS total_amount,
+        AVG(total_amount) AS average_amount
+    FROM invoices
+    GROUP BY quarter;
+END //
+
+DELIMITER ;
+
+-- Retrieve the total salary expense for each department
+DELIMITER //
+
+CREATE PROCEDURE GetTotalSalaryExpenseByDepartment()
+BEGIN
+    SELECT department, SUM(salary) AS total_salary_expense
+    FROM employees
+    GROUP BY department;
+END //
+
+DELIMITER ;
+
+-- Total Number of Employees in Each Department
+DELIMITER //
+
+CREATE PROCEDURE GetNumEmployeesByDepartment()
+BEGIN
+    SELECT department, COUNT(*) AS num_employees
+    FROM employees
+    GROUP BY department;
+END //
+
+DELIMITER ;
+
+-- Retrieve the average impressions, clicks, and conversions for each advertisement type
+DELIMITER //
+
+CREATE PROCEDURE GetAvgMetricsByAdvertisementType()
+BEGIN
+    SELECT type, COUNT(*) AS count, AVG(impressions) AS avg_impressions, AVG(clicks) AS avg_clicks, AVG(conversions) AS avg_conversions
+    FROM advertisements
+    JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
+    GROUP BY type;
+END //
+
+DELIMITER ;
+
+-- execution of the above store procedures
+
+-- Retrieve the total budget spent on campaigns
+CALL GetTotalBudgetSpent();
+
+-- Categorizing the campaigns based on the budget
+CALL GetBudgetCategories();
+
+-- Retrieve the total revenue from invoices
+CALL GetTotalRevenue();
+
+-- Group invoices based on the quarter
+CALL GroupInvoicesByQuarter();
+
+-- Retrieve the total salary expense for each department
+CALL GetTotalSalaryExpenseByDepartment();
+
+-- Total Number of Employees in Each Department
+CALL GetNumEmployeesByDepartment();
+
+-- Retrieve the average impressions, clicks, and conversions for each advertisement type
+CALL GetAvgMetricsByAdvertisementType();
+
+-- GRANT AND REVOKE PERMISSIONS
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the clients table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.clients TO 'hussain'@'localhost';
+
+-- Grant SELECT privilege on the campaigns table to user 'hussain' from 'localhost'
+GRANT SELECT ON advertising_agency.campaigns TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the advertisements table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.advertisements TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the employees table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.employees TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the advertisement_placements table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.advertisement_placements TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the invoices table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.invoices TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the payments table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.payments TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the vendor_supplier_information table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.vendor_supplier_information TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the vendor_invoices table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.vendor_invoices TO 'hussain'@'localhost';
+
+-- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the performance_metrics table to user 'hussain' from 'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON advertising_agency.performance_metrics TO 'hussain'@'localhost';
+
+-- Grant SELECT privilege on the contact_us table to user 'hussain' from 'localhost'
+GRANT SELECT ON advertising_agency.contact_us TO 'hussain'@'localhost';
+
+-- Grant EXECUTE privilege on the stored procedures to user 'hussain' from 'localhost'
+GRANT EXECUTE ON PROCEDURE advertising_agency.GetTotalBudgetSpent TO 'hussain'@'localhost';
+GRANT EXECUTE ON PROCEDURE advertising_agency.GetBudgetCategories TO 'hussain'@'localhost';
+GRANT EXECUTE ON PROCEDURE advertising_agency.GetTotalRevenue TO 'hussain'@'localhost';
+GRANT EXECUTE ON PROCEDURE advertising_agency.GroupInvoicesByQuarter TO 'hussain'@'localhost';
+GRANT EXECUTE ON PROCEDURE advertising_agency.GetTotalSalaryExpenseByDepartment TO 'hussain'@'localhost';
+GRANT EXECUTE ON PROCEDURE advertising_agency.GetNumEmployeesByDepartment TO 'hussain'@'localhost';
+GRANT EXECUTE ON PROCEDURE advertising_agency.GetAvgMetricsByAdvertisementType TO 'hussain'@'localhost';
+
+-- REVOKE PERMESSIONS:-
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the clients table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.clients FROM 'hussain'@'localhost';
+
+-- Revoke SELECT privilege on the campaigns table from user 'hussain' from 'localhost'
+REVOKE SELECT ON advertising_agency.campaigns FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the advertisements table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.advertisements FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the employees table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.employees FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the advertisement_placements table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.advertisement_placements FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the invoices table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.invoices FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the payments table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.payments FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the vendor_supplier_information table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.vendor_supplier_information FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the vendor_invoices table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.vendor_invoices FROM 'hussain'@'localhost';
+
+-- Revoke SELECT, INSERT, UPDATE, and DELETE privileges on the performance_metrics table from user 'hussain' from 'localhost'
+REVOKE SELECT, INSERT, UPDATE, DELETE ON advertising_agency.performance_metrics FROM 'hussain'@'localhost';
+
+-- Revoke SELECT privilege on the contact_us table from user 'hussain' from 'localhost'
+REVOKE SELECT ON advertising_agency.contact_us FROM 'hussain'@'localhost';
+
+-- Revoke EXECUTE privilege on the stored procedures from user 'hussain' from 'localhost'
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GetTotalBudgetSpent FROM 'hussain'@'localhost';
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GetBudgetCategories FROM 'hussain'@'localhost';
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GetTotalRevenue FROM 'hussain'@'localhost';
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GroupInvoicesByQuarter FROM 'hussain'@'localhost';
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GetTotalSalaryExpenseByDepartment FROM 'hussain'@'localhost';
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GetNumEmployeesByDepartment FROM 'hussain'@'localhost';
+REVOKE EXECUTE ON PROCEDURE advertising_agency.GetAvgMetricsByAdvertisementType FROM 'hussain'@'localhost';
+
+
+-- Execution of the commands that were granted to 'hussain'
+
+-- Open a terminal on Ubuntu.
+
+-- Log in to MySQL using the MySQL client:
+
+mysql -u hussain -p
+
+-- then
+CALL advertising_agency.GetTotalBudgetSpent;
+EXIT;
