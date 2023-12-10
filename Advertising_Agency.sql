@@ -1,7 +1,6 @@
 -- Create the database Advertising_company
-CREATE DATABASE advertising_agency;
-USE advertising_agency;
-
+CREATE DATABASE Advertising_comapny;
+USE Advertising_comapny;
 
 -- Create clients table
 CREATE TABLE clients (
@@ -845,11 +844,25 @@ LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_plac
 GROUP BY campaigns.campaign_id
 HAVING total_cost > 1.2 * budget;
 
+-- Update column duration in advertisement_placements to duration_days
+ALTER TABLE advertisement_placements
+RENAME COLUMN duration TO duration_days;
+
 -- Calculate the average duration of advertisement placements for each type
 SELECT advertisements.type, AVG(advertisement_placements.duration_days) AS avg_duration
 FROM advertisements
 JOIN advertisement_placements ON advertisements.advertisement_id = advertisement_placements.advertisement_id
 GROUP BY advertisements.type;
++--------------------------+--------------+
+| type                     | avg_duration |
++--------------------------+--------------+
+| Billboard                |      45.0000 |
+| Billboards/Newspaper Ads |      20.0000 |
+| Newspaper Ads            |      45.0000 |
+| Newspaper Ads/Banners    |      30.0000 |
+| Social media posts       |      30.0000 |
+| Youtube/TV Ad            |      60.0000 |
++--------------------------+--------------+
 
 -- Retrieve the campaigns where the creative director is also part of the creative team
 SELECT campaigns.name AS campaign_name, campaigns.creative_director, advertisements.creative_team
@@ -864,11 +877,17 @@ JOIN advertisements ON employees.name = advertisements.creative_team
 JOIN performance_metrics ON advertisements.advertisement_id = performance_metrics.advertisement_id
 GROUP BY employees.department;
 
+Empty set (0.00 sec)
+
+
 -- Retrieve the campaigns that have not been invoiced
 SELECT campaigns.name AS campaign_name
 FROM campaigns
 LEFT JOIN invoices ON campaigns.campaign_id = invoices.campaign_id
 WHERE invoices.campaign_id IS NULL;
+
+Empty set (0.00 sec)
+
 
 -- Views:
 -- View to display information about each advertisement placement with its associated campaign and client
@@ -1090,16 +1109,44 @@ GROUP BY c.campaign_id;
 |          10 | 25 years anniversary campaign(social media) |          18000.00 |           0.00 |
 +-------------+---------------------------------------------+-------------------+----------------+
 
-
 -- Indexes
 CREATE INDEX idx_clients_email ON clients(email);
 CREATE INDEX idx_campaigns_name ON campaigns(name);
 CREATE INDEX idx_advertisements_type ON advertisements(type);
 CREATE INDEX idx_employees_email ON employees(position);
 
--- Update column duration in advertisement_placements to duration_days
-ALTER TABLE advertisement_placements
-RENAME COLUMN duration TO duration_days;
+-- checking the indexes of the queries
+SELECT * FROM INFORMATION_SCHEMA.STATISTICS
+WHERE TABLE_NAME = 'clients' AND INDEX_NAME = 'idx_clients_email';
++---------------+---------------------+------------+------------+---------------------+-------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| TABLE_CATALOG | TABLE_SCHEMA        | TABLE_NAME | NON_UNIQUE | INDEX_SCHEMA        | INDEX_NAME        | SEQ_IN_INDEX | COLUMN_NAME | COLLATION | CARDINALITY | SUB_PART | PACKED | NULLABLE | INDEX_TYPE | COMMENT | INDEX_COMMENT | IS_VISIBLE | EXPRESSION |
++---------------+---------------------+------------+------------+---------------------+-------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| def           | Advertising_company | clients    |          1 | Advertising_company | idx_clients_email |            1 | email       | A         |          10 |     NULL |   NULL | YES      | BTREE      |         |               | YES        | NULL       |
++---------------+---------------------+------------+------------+---------------------+-------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+
+SELECT * FROM INFORMATION_SCHEMA.STATISTICS
+WHERE TABLE_NAME = 'campaigns' AND INDEX_NAME = 'idx_campaigns_name';
++---------------+---------------------+------------+------------+---------------------+--------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| TABLE_CATALOG | TABLE_SCHEMA        | TABLE_NAME | NON_UNIQUE | INDEX_SCHEMA        | INDEX_NAME         | SEQ_IN_INDEX | COLUMN_NAME | COLLATION | CARDINALITY | SUB_PART | PACKED | NULLABLE | INDEX_TYPE | COMMENT | INDEX_COMMENT | IS_VISIBLE | EXPRESSION |
++---------------+---------------------+------------+------------+---------------------+--------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| def           | Advertising_company | campaigns  |          1 | Advertising_company | idx_campaigns_name |            1 | name        | A         |          10 |     NULL |   NULL | YES      | BTREE      |         |               | YES        | NULL       |
++---------------+---------------------+------------+------------+---------------------+--------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+
+SELECT * FROM INFORMATION_SCHEMA.STATISTICS
+WHERE TABLE_NAME = 'advertisements' AND INDEX_NAME = 'idx_advertisements_type';
++---------------+---------------------+----------------+------------+---------------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| TABLE_CATALOG | TABLE_SCHEMA        | TABLE_NAME     | NON_UNIQUE | INDEX_SCHEMA        | INDEX_NAME              | SEQ_IN_INDEX | COLUMN_NAME | COLLATION | CARDINALITY | SUB_PART | PACKED | NULLABLE | INDEX_TYPE | COMMENT | INDEX_COMMENT | IS_VISIBLE | EXPRESSION |
++---------------+---------------------+----------------+------------+---------------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| def           | Advertising_company | advertisements |          1 | Advertising_company | idx_advertisements_type |            1 | type        | A         |           6 |     NULL |   NULL | YES      | BTREE      |         |               | YES        | NULL       |
++---------------+---------------------+----------------+------------+---------------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+
+SELECT * FROM INFORMATION_SCHEMA.STATISTICS
+WHERE TABLE_NAME = 'employees' AND INDEX_NAME = 'idx_employees_email';
++---------------+---------------------+------------+------------+---------------------+---------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| TABLE_CATALOG | TABLE_SCHEMA        | TABLE_NAME | NON_UNIQUE | INDEX_SCHEMA        | INDEX_NAME          | SEQ_IN_INDEX | COLUMN_NAME | COLLATION | CARDINALITY | SUB_PART | PACKED | NULLABLE | INDEX_TYPE | COMMENT | INDEX_COMMENT | IS_VISIBLE | EXPRESSION |
++---------------+---------------------+------------+------------+---------------------+---------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
+| def           | Advertising_company | employees  |          1 | Advertising_company | idx_employees_email |            1 | position    | A         |           4 |     NULL |   NULL | YES      | BTREE      |         |               | YES        | NULL       |
++---------------+---------------------+------------+------------+---------------------+---------------------+--------------+-------------+-----------+-------------+----------+--------+----------+------------+---------+---------------+------------+------------+
 
 -- Concurrency control and store procedure to be updated
 
@@ -1256,24 +1303,76 @@ DELIMITER ;
 
 -- Retrieve the total budget spent on campaigns
 CALL GetTotalBudgetSpent();
++--------------------+
+| total_budget_spent |
++--------------------+
+|          101000.00 |
++--------------------+
+
 
 -- Categorizing the campaigns based on the budget
 CALL GetBudgetCategories();
++------------------------+----------------+
+| budget_category        | campaign_count |
++------------------------+----------------+
+| Less than 6000         |              1 |
+| Between 6000 and 12000 |              7 |
+| 12000 and more         |              2 |
++------------------------+----------------+
 
 -- Retrieve the total revenue from invoices
 CALL GetTotalRevenue();
++---------------+
+| total_revenue |
++---------------+
+|     101000.00 |
++---------------+
 
 -- Group invoices based on the quarter
 CALL GroupInvoicesByQuarter();
++---------+--------------+--------------+----------------+
+| quarter | num_invoices | total_amount | average_amount |
++---------+--------------+--------------+----------------+
+|       1 |            2 |     11000.00 |    5500.000000 |
+|       2 |            6 |     57000.00 |    9500.000000 |
+|       3 |            2 |     33000.00 |   16500.000000 |
++---------+--------------+--------------+----------------+
 
 -- Retrieve the total salary expense for each department
 CALL GetTotalSalaryExpenseByDepartment();
++------------+----------------------+
+| department | total_salary_expense |
++------------+----------------------+
+| Marketing  |            195000.00 |
+| Design     |            175000.00 |
+| Analytics  |            145000.00 |
+| IT         |            165000.00 |
++------------+----------------------+
 
 -- Total Number of Employees in Each Department
 CALL GetNumEmployeesByDepartment();
++------------+---------------+
+| department | num_employees |
++------------+---------------+
+| Marketing  |             3 |
+| Design     |             3 |
+| Analytics  |             2 |
+| IT         |             2 |
++------------+---------------+
+
 
 -- Retrieve the average impressions, clicks, and conversions for each advertisement type
 CALL GetAvgMetricsByAdvertisementType();
++--------------------------+-------+-----------------+------------+-----------------+
+| type                     | count | avg_impressions | avg_clicks | avg_conversions |
++--------------------------+-------+-----------------+------------+-----------------+
+| Billboard                |     2 |      65000.0000 |  1250.0000 |         65.0000 |
+| Social media posts       |     4 |     122500.0000 |  2125.0000 |        122.5000 |
+| Newspaper Ads            |     1 |      60000.0000 |   800.0000 |         40.0000 |
+| Newspaper Ads/Banners    |     1 |     120000.0000 |  2000.0000 |        120.0000 |
+| Billboards/Newspaper Ads |     1 |     100000.0000 |  1300.0000 |        100.0000 |
+| Youtube/TV Ad            |     1 |     110000.0000 |  1600.0000 |        110.0000 |
++--------------------------+-------+-----------------+------------+-----------------+
 
 -- GRANT AND REVOKE PERMISSIONS
 -- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the clients table to user 'hussain' from 'localhost'
