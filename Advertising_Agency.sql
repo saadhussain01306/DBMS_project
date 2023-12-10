@@ -1,4 +1,4 @@
--- Create the database Advertising_company
+-- Create the database Advertising_agency
 CREATE DATABASE advertising_agency;
 USE advertising_agency;
 
