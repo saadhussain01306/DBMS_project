@@ -1101,3 +1101,22 @@ SELECT version INTO @version FROM campaigns WHERE campaign_id = 1;
 Check @version against the expected version before updating
 UPDATE campaigns SET budget = 9000.00, version = version + 1 WHERE campaign_id = 1 AND version = @version;
 COMMIT;
+
+-- Create a backup table for the campaigns table
+CREATE TABLE campaigns_backup AS
+SELECT * FROM campaigns;
+
+-- Trigger to update the total budget of a campaign when a new advertisement placement is added
+CREATE TRIGGER trg_update_campaign_budget
+AFTER INSERT ON advertisement_placements
+FOR EACH ROW
+BEGIN
+    -- Backup the current state of the campaigns table
+    INSERT INTO campaigns_backup
+    SELECT * FROM campaigns;
+
+    -- Update the campaigns table with the new budget
+    UPDATE campaigns
+    SET budget = budget + NEW.cost
+    WHERE campaign_id = (SELECT campaign_id FROM advertisements WHERE advertisement_id = NEW.advertisement_id);
+END;
