@@ -1,6 +1,6 @@
 -- Create the database Advertising_company
-CREATE DATABASE Advertising_comapny;
-USE Advertising_comapny;
+CREATE DATABASE Advertising_company
+USE Advertising_company;
 
 -- Create clients table
 CREATE TABLE clients (
