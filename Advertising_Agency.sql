@@ -157,7 +157,7 @@ SELECT * FROM clients;
 |         6 | Vishal Mart Mysuru              | manager@vishalmartmys.com | 678-901-2345 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Radha Shenoy          |
 |         7 | DMart Bengaluru                 | manager@dmartblr.com      | 789-012-3456 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Raghav Sharma         |
 |         8 | Dosa Point                      | manager@dosapoint.com     | 890-123-4567 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Madhav Ullas          |
-|         9 | Bhaskars Mane Holige           | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
+|         9 | Bhaskars Mane Holige            | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
 |        10 | Airtel Mysuru                   | manager@airtelmys.com     | 012-345-6789 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Naresh Reddy          |
 +-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
 
