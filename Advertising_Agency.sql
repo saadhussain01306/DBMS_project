@@ -1299,6 +1299,158 @@ END //
 
 DELIMITER ;
 
+-- Paramterized Stored Procedures
+
+-- Stored procedure 1: Stored Procedure to Retrieve Client Information
+DELIMITER //
+
+CREATE PROCEDURE GetClientInformation (IN clientID INT)
+BEGIN
+    SELECT * FROM clients WHERE client_id = clientID;
+END //
+
+DELIMITER ;
+
+
+-- Stored procedure 2: Stored Procedure to Calculate Campaign Budget Usage 
+DELIMITER //
+
+CREATE PROCEDURE CalculateBudgetUsage (IN campaignID INT)
+BEGIN
+    DECLARE totalSpent DECIMAL(10, 2);
+
+    SELECT SUM(cost) INTO totalSpent
+    FROM advertisement_placements ap
+    JOIN advertisements a ON ap.advertisement_id = a.advertisement_id
+    WHERE a.campaign_id = campaignID;
+
+    SELECT budget - totalSpent AS remainingBudget
+    FROM campaigns
+    WHERE campaign_id = campaignID;
+END //
+
+DELIMITER ;
+
+DROP PROCEDURE CalculateBudgetUsage;
+
+Stored Procedure 3: Get Campaign Information
+DELIMITER //
+
+CREATE PROCEDURE GetCampaignInformation (IN campaignID INT)
+BEGIN
+    SELECT
+        c.campaign_id,
+        c.name AS campaign_name,
+        c.budget,
+        c.start_date,
+        c.end_date,
+        c.creative_director,
+        cl.name AS client_name,
+        cl.email AS client_email
+    FROM
+        campaigns c
+    INNER JOIN clients cl ON c.client_id = cl.client_id
+    WHERE
+        c.campaign_id = campaignID;
+END //
+
+DELIMITER ;
+
+
+-- Stored Procedure 4: Calculate Total Cost of a Campaign
+-- Stored Procedure: Calculate Total Cost of a Campaign
+DELIMITER //
+
+CREATE PROCEDURE CalculateCampaignTotalCost (IN campaignID INT, OUT totalCost DECIMAL(10, 2))
+BEGIN
+    -- Calculate total placement cost
+    SELECT COALESCE(SUM(ap.cost), 0) -- COALESCE returns the first non-null value in a list.
+    INTO totalCost
+    FROM advertisement_placements ap
+    WHERE ap.advertisement_id IN (
+        SELECT a.advertisement_id
+        FROM advertisements a
+        WHERE a.campaign_id = campaignID
+    );
+END //
+
+DELIMITER ;
+
+-- DROP PROCEDURE CalculateCampaignTotalCost;
+
+Stored Procedure 5: Get Employee Information by Department
+DELIMITER //
+
+CREATE PROCEDURE GetEmployeeInfoByDepartment (IN deptName VARCHAR(50))
+BEGIN
+    SELECT 
+        e.employee_id,
+        e.name AS employee_name,
+        e.position,
+        e.email,
+        e.phone,
+        e.salary,
+        e.department
+    FROM employees e
+    WHERE e.department = deptName;
+END //
+
+DELIMITER ;
+
+
+-- Stored Procedure 6: Get Performance Metrics for an Advertisement
+DELIMITER //
+
+CREATE PROCEDURE GetAdvertisementPerformance (IN adID INT)
+BEGIN
+    SELECT 
+        pm.metric_id,
+        pm.impressions,
+        pm.clicks,
+        pm.conversions,
+        pm.date,
+        a.type AS advertisement_type,
+        a.content AS advertisement_content
+    FROM performance_metrics pm
+    INNER JOIN advertisements a ON pm.advertisement_id = a.advertisement_id
+    WHERE pm.advertisement_id = adID;
+END //
+
+DELIMITER ;
+
+
+-- Stored Procedure 7: Get Vendor Invoices for a Payment
+DELIMITER //
+
+CREATE PROCEDURE GetVendorInvoicesForPayment (IN paymentID INT)
+BEGIN
+    SELECT 
+        vi.invoice_id,
+        vi.invoice_date,
+        vi.total_amount,
+        vi.payment_status,
+        v.vendor_name,
+        v.contact_info
+    FROM vendor_invoices vi
+    INNER JOIN vendor_supplier_information v ON vi.vendor_id = v.vendor_id
+    WHERE vi.payment_id = paymentID;
+END //
+
+DELIMITER ;
+
+
+-- Stored procedure 8: Stored Procedure to Log Contact Us Messages
+DELIMITER //
+
+CREATE PROCEDURE LogContactMessage (IN contactName VARCHAR(255), IN contactEmail VARCHAR(255), IN messageText TEXT)
+BEGIN
+    INSERT INTO contact_us (name, email, message)
+    VALUES (contactName, contactEmail, messageText);
+END //
+
+DELIMITER ;
+
+
 -- execution of the above store procedures
 
 -- Retrieve the total budget spent on campaigns
@@ -1373,6 +1525,63 @@ CALL GetAvgMetricsByAdvertisementType();
 | Billboards/Newspaper Ads |     1 |     100000.0000 |  1300.0000 |        100.0000 |
 | Youtube/TV Ad            |     1 |     110000.0000 |  1600.0000 |        110.0000 |
 +--------------------------+-------+-----------------+------------+-----------------+
+
+-- Execution of Complex paramterized procedures
+
+CALL GetClientInformation(1);
++-----------+------------+------------------+--------------+-----------------------------------------------+-----------------+
+| client_id | name       | email            | phone        | billing_address                               | account_manager |
++-----------+------------+------------------+--------------+-----------------------------------------------+-----------------+
+|         1 | Nike India | manager@nike.com | 123-456-7890 | 123, Kuvempu Nagar, Mysuru, Karnataka, 570023 | Rahul Shah      |
++-----------+------------+------------------+--------------+-----------------------------------------------+-----------------+
+
+CALL CalculateBudgetUsage(1);
++-----------------+
+| remainingBudget |
++-----------------+
+|         3200.00 |
++-----------------+
+
+CALL GetCampaignInformation(1);
++-------------+-----------------+---------+------------+------------+-------------------+-------------+------------------+
+| campaign_id | campaign_name   | budget  | start_date | end_date   | creative_director | client_name | client_email     |
++-------------+-----------------+---------+------------+------------+-------------------+-------------+------------------+
+|           1 | Shoes Billboard | 5000.00 | 2023-01-01 | 2023-02-01 | Nawaz Khan        | Nike India  | manager@nike.com |
++-------------+-----------------+---------+------------+------------+-------------------+-------------+------------------+
+
+CALL CalculateCampaignTotalCost(1, @totalCost);
+SELECT @totalCost AS "Total Cost";
++------------+
+| Total Cost |
++------------+
+|    1800.00 |
++------------+
+
+CALL GetEmployeeInfoByDepartment('Marketing');
++-------------+---------------+----------+-----------------------+--------------+----------+------------+
+| employee_id | employee_name | position | email                 | phone        | salary   | department |
++-------------+---------------+----------+-----------------------+--------------+----------+------------+
+|           1 | Amit Sharma   | Manager  | amit.sharma@gmail.com | 345-678-9012 | 60000.00 | Marketing  |
+|           5 | Arjun Singh   | Manager  | arjun.singh@gmail.com | 789-012-3456 | 65000.00 | Marketing  |
+|           9 | Suman Verma   | Manager  | suman.verma@yahoo.com | 123-456-7890 | 70000.00 | Marketing  |
++-------------+---------------+----------+-----------------------+--------------+----------+------------+
+
+CALL GetAdvertisementPerformance(1);
++-----------+-------------+--------+-------------+------------+--------------------+----------------------------+
+| metric_id | impressions | clicks | conversions | date       | advertisement_type | advertisement_content      |
++-----------+-------------+--------+-------------+------------+--------------------+----------------------------+
+|         1 |       50000 |   1000 |          50 | 2023-02-01 | Billboard          | https://hask.inc/content/1 |
++-----------+-------------+--------+-------------+------------+--------------------+----------------------------+
+
+CALL GetVendorInvoicesForPayment(1);
++------------+--------------+--------------+----------------+-------------------+--------------------+
+| invoice_id | invoice_date | total_amount | payment_status | vendor_name       | contact_info       |
++------------+--------------+--------------+----------------+-------------------+--------------------+
+|          1 | 2023-02-25   |      1000.00 | Paid           | CreativeSolutions | creative@gmail.com |
++------------+--------------+--------------+----------------+-------------------+--------------------+
+
+CALL LogContactMessage('John Doe', 'john@example.com', 'This is a test message.');
+
 
 -- GRANT AND REVOKE PERMISSIONS
 -- Grant SELECT, INSERT, UPDATE, and DELETE privileges on the clients table to user 'hussain' from 'localhost'
@@ -1472,3 +1681,6 @@ mysql -u hussain -p
 -- then
 CALL advertising_agency.GetTotalBudgetSpent;
 EXIT;
+
+-- Implementing Normalization
+ 
