@@ -837,12 +837,6 @@ GROUP BY campaigns.campaign_id;
 | 25 years anniversary campaign(social media) |      18000.00 |    1600.00 |
 +---------------------------------------------+---------------+------------+
 
--- Retrieve the campaigns that have exceeded their budget by more than 20%
-SELECT campaigns.name AS campaign_name, campaigns.budget, SUM(advertisement_placements.cost) AS total_cost
-FROM campaigns
-LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_placements.campaign_id
-GROUP BY campaigns.campaign_id
-HAVING total_cost > 1.2 * budget;
 
 -- Update column duration in advertisement_placements to duration_days
 ALTER TABLE advertisement_placements
