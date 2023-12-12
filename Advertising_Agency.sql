@@ -989,6 +989,7 @@ SELECT * FROM clients;
 
 
 -- Trigger to enforce a constraint on the maximum duration of an advertisement placement
+DELIMITER //
 CREATE TRIGGER trg_check_duration
 BEFORE INSERT ON advertisement_placements
 FOR EACH ROW
@@ -1046,6 +1047,23 @@ BEGIN
 END;
 //
 DELIMITER ;
+SELECT * FROM clients;
++-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
+| client_id | name                            | email                     | phone        | billing_address                                   | account_manager       |
++-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
+|         1 | Nike India                      | manager@nike.com          | 123-456-7890 | 123, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Rahul Shah            |
+|         2 | Haldiram Snacks Private Limited | cs@haldiram.com           | 234-567-8901 | 456, Vijayanagar, Mysuru, Karnataka, 570016       | Rohit Gowda           |
+|         3 | A2B Restaurants                 | care@aabsweets.com        | 345-678-9012 | 789, Siddhartha Layout, Mysuru, Karnataka, 570011 | Arman Singh           |
+|         4 | Manipal Hospitals               | manager@manipal.com       | 456-789-0123 | 234, Jayalakshmipuram, Mysuru, Karnataka, 570012  | Bhaskar Jain          |
+|         5 | Loyal World Supermarket Mysuru  | manager@loyalworldmys.com | 567-890-1234 | 567, Lakshmipuram, Mysuru, Karnataka, 570024      | Rohini Bhat           |
+|         6 | Vishal Mart Mysuru              | manager@vishalmartmys.com | 678-901-2345 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Radha Shenoy          |
+|         7 | DMart Bengaluru                 | manager@dmartblr.com      | 789-012-3456 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Raghav Sharma         |
+|         8 | Dosa Point                      | manager@dosapoint.com     | 890-123-4567 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Madhav Ullas          |
+|         9 | Bhaskar's Mane Holige           | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
+|        10 | Airtel Mysuru                   | manager@airtelmys.com     | 012-345-6789 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Naresh Reddy          |
+|      2002 | Jane street                     | jane@example.com          | 987-654-3210 | 456 Oak St                                        | Bob                   |
++-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
+
 
 --  DROP TRIGGER clients_update_trigger;
 
@@ -1082,7 +1100,23 @@ DELIMITER ;
 INSERT INTO clients (client_id, name, email, phone, billing_address, account_manager)
 VALUES (2002, 'jane street', 'jane@example.com', '987-654-3210', '456 Oak St', 'Bob');
 SELECT * FROM clients;
-SELECT * FROM clients_backup;
+
+SELECT * FROM clients;
++-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
+| client_id | name                            | email                     | phone        | billing_address                                   | account_manager       |
++-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
+|         1 | Nike India                      | manager@nike.com          | 123-456-7890 | 123, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Rahul Shah            |
+|         2 | Haldiram Snacks Private Limited | cs@haldiram.com           | 234-567-8901 | 456, Vijayanagar, Mysuru, Karnataka, 570016       | Rohit Gowda           |
+|         3 | A2B Restaurants                 | care@aabsweets.com        | 345-678-9012 | 789, Siddhartha Layout, Mysuru, Karnataka, 570011 | Arman Singh           |
+|         4 | Manipal Hospitals               | manager@manipal.com       | 456-789-0123 | 234, Jayalakshmipuram, Mysuru, Karnataka, 570012  | Bhaskar Jain          |
+|         5 | Loyal World Supermarket Mysuru  | manager@loyalworldmys.com | 567-890-1234 | 567, Lakshmipuram, Mysuru, Karnataka, 570024      | Rohini Bhat           |
+|         6 | Vishal Mart Mysuru              | manager@vishalmartmys.com | 678-901-2345 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Radha Shenoy          |
+|         7 | DMart Bengaluru                 | manager@dmartblr.com      | 789-012-3456 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Raghav Sharma         |
+|         8 | Dosa Point                      | manager@dosapoint.com     | 890-123-4567 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Madhav Ullas          |
+|         9 | Bhaskar's Mane Holige           | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
+|        10 | Airtel Mysuru                   | manager@airtelmys.com     | 012-345-6789 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Naresh Reddy          |
+|      2002 | Jane street                     | jane@example.com          | 987-654-3210 | 456 Oak St                                        | Bob                   |
++-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
 
 -- Complex Views:
 -- View to display performance metrics with additional calculated fields
