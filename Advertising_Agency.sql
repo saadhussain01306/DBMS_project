@@ -969,6 +969,7 @@ BEGIN
     END IF;
 END;
 //
+DELIMITER ;
 
 -- Execution
 DELETE FROM clients WHERE client_id = 4;
