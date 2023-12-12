@@ -157,7 +157,7 @@ SELECT * FROM clients;
 |         6 | Vishal Mart Mysuru              | manager@vishalmartmys.com | 678-901-2345 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Radha Shenoy          |
 |         7 | DMart Bengaluru                 | manager@dmartblr.com      | 789-012-3456 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Raghav Sharma         |
 |         8 | Dosa Point                      | manager@dosapoint.com     | 890-123-4567 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Madhav Ullas          |
-|         9 | Bhaskars Mane Holige            | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
+|         9 | Bhaskars Mane Holige           | manager@bmholige.com      | 901-234-5678 | 890, Chamundi Vihar, Mysuru, Karnataka, 570019    | Krishnamurthy Shankar |
 |        10 | Airtel Mysuru                   | manager@airtelmys.com     | 012-345-6789 | 789, Kuvempu Nagar, Mysuru, Karnataka, 570023     | Naresh Reddy          |
 +-----------+---------------------------------+---------------------------+--------------+---------------------------------------------------+-----------------------+
 
@@ -837,6 +837,12 @@ GROUP BY campaigns.campaign_id;
 | 25 years anniversary campaign(social media) |      18000.00 |    1600.00 |
 +---------------------------------------------+---------------+------------+
 
+-- Retrieve the campaigns that have exceeded their budget by more than 20%
+SELECT campaigns.name AS campaign_name, campaigns.budget, SUM(advertisement_placements.cost) AS total_cost
+FROM campaigns
+LEFT JOIN advertisement_placements ON campaigns.campaign_id = advertisement_placements.campaign_id
+GROUP BY campaigns.campaign_id
+HAVING total_cost > 1.2 * budget;
 
 -- Update column duration in advertisement_placements to duration_days
 ALTER TABLE advertisement_placements
@@ -944,19 +950,8 @@ SELECT * FROM vw_total_payments_by_client;
 +-----------+---------------------------------+----------------+
 
 -- Complex Triggers
--- Trigger to update the total amount and payment status when a new invoice is added
-DELIMITER //
-CREATE TRIGGER trg_update_campaign_payment_status
-AFTER INSERT ON invoices
-FOR EACH ROW
-BEGIN
-    UPDATE vw_campaign_payment_status cps
-    SET cps.total_amount_paid = cps.total_amount_paid + NEW.total_amount,
-        cps.amount_pending = cps.amount_pending - NEW.total_amount
-    WHERE cps.campaign_id = NEW.campaign_id;
-END;
-//
 -- Trigger to prevent deleting clients with active campaigns
+DELIMITER //
 CREATE TRIGGER trg_prevent_delete_client
 BEFORE DELETE ON clients
 FOR EACH ROW
@@ -969,21 +964,30 @@ BEGIN
     WHERE client_id = OLD.client_id;
 
     IF campaign_count > 0 THEN
-        SIGNAL SQLSTATE '45000'
+        SIGNAL SQLSTATE '45000' -- To signal a generic SQLSTATE value, use '45000' , which means “unhandled user-defined exception.”
         SET MESSAGE_TEXT = 'Cannot delete client with active campaigns.';
     END IF;
 END;
 //
+
+-- Execution
+DELETE FROM clients WHERE client_id = 4;
+SELECT * FROM clients;
+
+-- Output: Error Code: 1644. Cannot delete client with active campaigns.
+
 -- Trigger to update the total budget of a campaign when a new advertisement placement is added
-CREATE TRIGGER trg_update_campaign_budget
-AFTER INSERT ON advertisement_placements
-FOR EACH ROW
-BEGIN
-    UPDATE campaigns
-    SET budget = budget + NEW.cost
-    WHERE campaign_id = (SELECT campaign_id FROM advertisements WHERE advertisement_id = NEW.advertisement_id);
-END;
-//
+-- CREATE TRIGGER trg_update_campaign_budget
+-- AFTER INSERT ON advertisement_placements
+-- FOR EACH ROW
+-- BEGIN
+--     UPDATE campaigns
+--     SET budget = budget + NEW.cost
+--     WHERE campaign_id = (SELECT campaign_id FROM advertisements WHERE advertisement_id = NEW.advertisement_id);
+-- END;
+-- //
+
+
 -- Trigger to enforce a constraint on the maximum duration of an advertisement placement
 CREATE TRIGGER trg_check_duration
 BEFORE INSERT ON advertisement_placements
@@ -1000,18 +1004,32 @@ END;
 //
 DELIMITER ;
 
+
+-- Execution
+-- Optional: avoiding manually adding placement_id
+ALTER TABLE advertisement_placements
+MODIFY COLUMN placement_id INT AUTO_INCREMENT;
+
+SELECT * FROM advertisement_placements;
+
+INSERT INTO advertisement_placements (advertisement_id, placement_details, cost, duration_days)
+VALUES (2, 'Sidebar Ad', 50, 65);
+-- Output: Error Code: 1644. Duration exceeds the maximum allowed duration.
+
 -- Pushing Data into backup table trigger
 -- Create Trigger
 DELIMITER //
-CREATE TRIGGER clients_insert_update_trigger
+CREATE TRIGGER clients_insert_trigger
 AFTER INSERT ON clients
 FOR EACH ROW
 BEGIN
     -- Insert into clients_backup table
-    INSERT INTO clients_backup
+    INSERT INTO clients_backup(client_id, name, email, phone, billing_address, account_manager)
     VALUES (NEW.client_id, NEW.name, NEW.email, NEW.phone, NEW.billing_address, NEW.account_manager);
 END;
 //
+
+DELIMITER //
 CREATE TRIGGER clients_update_trigger
 AFTER UPDATE ON clients
 FOR EACH ROW
@@ -1029,6 +1047,21 @@ END;
 //
 DELIMITER ;
 
+--  DROP TRIGGER clients_update_trigger;
+
+-- Execution: 
+SELECT * FROM clients;
+SELECT * FROM clients_backup;
+INSERT INTO clients (client_id, name, email, phone, billing_address, account_manager)
+VALUES (1003, 'John Doe Motorsports', 'john@example.com', '123-456-7890', '123 Main St', 'Alice');
+
+-- Update
+SET SQL_SAFE_UPDATES = 0; -- Disable Safe Update Mode for the Current Session:
+UPDATE clients SET email = 'john.doe@example.com' WHERE client_id = 1001;
+SELECT * FROM clients;
+SELECT * FROM clients_backup;
+
+
 -- Create Trigger
 DELIMITER //
 CREATE TRIGGER capitalize_name_trigger
@@ -1040,6 +1073,16 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+-- Execution:
+
+-- DELETE FROM clients WHERE client_id='2002';
+-- DELETE FROM clients_backup WHERE client_id='2002';
+
+INSERT INTO clients (client_id, name, email, phone, billing_address, account_manager)
+VALUES (2002, 'jane street', 'jane@example.com', '987-654-3210', '456 Oak St', 'Bob');
+SELECT * FROM clients;
+SELECT * FROM clients_backup;
 
 -- Complex Views:
 -- View to display performance metrics with additional calculated fields
