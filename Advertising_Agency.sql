@@ -1683,4 +1683,5 @@ CALL advertising_agency.GetTotalBudgetSpent;
 EXIT;
 
 -- Implementing Normalization
+-- As per our understanding, all tables appear to be in at least 1NF, and there are no apparent violations of 2NF, 3NF, or BCNF. The tables are well-structured and free of significant normalization anomalies.
  
