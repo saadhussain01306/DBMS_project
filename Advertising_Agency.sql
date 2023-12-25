@@ -1860,7 +1860,7 @@ FROM
 JOIN
     invoices ON clients.client_id = invoices.client_id
 WHERE
-    clients.client_id = 1;
+    clients.client_id = 2;D
 +---------------------------------+------------+--------------+--------------+----------------+
 | client_name                     | invoice_id | invoice_date | total_amount | payment_status |
 +---------------------------------+------------+--------------+--------------+----------------+
