@@ -1744,3 +1744,37 @@ EXIT;
 -- and there are no apparent violations of 2NF, 3NF, or BCNF.
 -- The tables are well-structured and free of significant normalization anomalies.
  
+-- genertaing bill
+
+-- descriptive bill for the client ID 1
+    SELECT
+    c.name AS client_name,
+    cp.name AS campaign_name,
+    a.type AS advertisement_type,
+    ap.placement_details,
+    i.invoice_id,
+    i.invoice_date,
+    i.total_amount AS invoice_amount,
+    i.payment_status,
+    p.payment_date,
+    p.payment_method,
+    pm.impressions,
+    pm.clicks,
+    pm.conversions
+FROM
+    clients c
+JOIN
+    campaigns cp ON c.client_id = cp.client_id
+JOIN
+    advertisements a ON cp.campaign_id = a.campaign_id
+JOIN
+    advertisement_placements ap ON a.advertisement_id = ap.advertisement_id
+JOIN
+    invoices i ON c.client_id = i.client_id AND cp.campaign_id = i.campaign_id
+JOIN
+    payments p ON i.invoice_id = p.invoice_id
+LEFT JOIN
+    performance_metrics pm ON a.advertisement_id = pm.advertisement_id
+WHERE
+    c.client_id = 1 AND
+    cp.campaign_id = 1;
