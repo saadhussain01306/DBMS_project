@@ -1746,7 +1746,7 @@ EXIT;
  
 -- genertaing bill
 
--- descriptive bill for the client ID 1
+-- descriptive bill for the client ID 1,Nike India
     SELECT
     c.name AS client_name,
     cp.name AS campaign_name,
@@ -1787,7 +1787,7 @@ WHERE
 | Nike India  | Shoes Billboard | Social media posts | Social Media - Sidebar Promotion |          1 | 2023-02-15   |        5000.00 | Paid           | 2023-02-20   | Credit Card    |       70000 |   1200 |          70 |
 +-------------+-----------------+--------------------+----------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
 
--- descriptive bill for client ID 2
+-- descriptive bill for client ID 2,Haldiram Snacks
 SELECT
     c.name AS client_name,
     cp.name AS campaign_name,
@@ -1827,6 +1827,7 @@ WHERE
 | Haldiram Snacks Private Limited | Haldirams End Of Month Sale | Newspaper Ads/Banners | Newspaper - Social Media Promo       |          3 | 2023-03-15   |        6000.00 | Paid           | 2023-03-20   | Credit Card    |      120000 |   2000 |         120 |
 +---------------------------------+-----------------------------+-----------------------+--------------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
 
+-- -- short descriptive bill for Nike India
 SELECT
     clients.name AS client_name,
     invoices.invoice_id,
@@ -1838,4 +1839,32 @@ FROM
 JOIN
     invoices ON clients.client_id = invoices.client_id
 WHERE
-    clients.client_id = [Your_Client_ID];
+    clients.client_id = 1;
+
++-------------+------------+--------------+--------------+----------------+
+| client_name | invoice_id | invoice_date | total_amount | payment_status |
++-------------+------------+--------------+--------------+----------------+
+| Nike India  |          1 | 2023-02-15   |      5000.00 | Paid           |
+| Nike India  |          2 | 2023-04-15   |      8000.00 | Paid           |
++-------------+------------+--------------+--------------+----------------+
+
+-- short descriptive bill for Haldiram Snacks
+SELECT
+    clients.name AS client_name,
+    invoices.invoice_id,
+    invoices.invoice_date,
+    invoices.total_amount,
+    invoices.payment_status
+FROM
+    clients
+JOIN
+    invoices ON clients.client_id = invoices.client_id
+WHERE
+    clients.client_id = 1;
++---------------------------------+------------+--------------+--------------+----------------+
+| client_name                     | invoice_id | invoice_date | total_amount | payment_status |
++---------------------------------+------------+--------------+--------------+----------------+
+| Haldiram Snacks Private Limited |          3 | 2023-03-15   |      6000.00 | Paid           |
+| Haldiram Snacks Private Limited |          4 | 2023-05-15   |      7000.00 | Paid           |
++---------------------------------+------------+--------------+--------------+----------------+
+
