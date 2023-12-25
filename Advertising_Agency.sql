@@ -1826,3 +1826,16 @@ WHERE
 | Haldiram Snacks Private Limited | Haldirams End Of Month Sale | Social media posts    | Social Media - Featured Ad Placement |          3 | 2023-03-15   |        6000.00 | Paid           | 2023-03-20   | Credit Card    |       90000 |   1800 |          90 |
 | Haldiram Snacks Private Limited | Haldirams End Of Month Sale | Newspaper Ads/Banners | Newspaper - Social Media Promo       |          3 | 2023-03-15   |        6000.00 | Paid           | 2023-03-20   | Credit Card    |      120000 |   2000 |         120 |
 +---------------------------------+-----------------------------+-----------------------+--------------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
+
+SELECT
+    clients.name AS client_name,
+    invoices.invoice_id,
+    invoices.invoice_date,
+    invoices.total_amount,
+    invoices.payment_status
+FROM
+    clients
+JOIN
+    invoices ON clients.client_id = invoices.client_id
+WHERE
+    clients.client_id = [Your_Client_ID];
