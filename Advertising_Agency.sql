@@ -1778,3 +1778,51 @@ LEFT JOIN
 WHERE
     c.client_id = 1 AND
     cp.campaign_id = 1;
+
+
++-------------+-----------------+--------------------+----------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
+| client_name | campaign_name   | advertisement_type | placement_details                | invoice_id | invoice_date | invoice_amount | payment_status | payment_date | payment_method | impressions | clicks | conversions |
++-------------+-----------------+--------------------+----------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
+| Nike India  | Shoes Billboard | Billboard          | Billboard - Top Location         |          1 | 2023-02-15   |        5000.00 | Paid           | 2023-02-20   | Credit Card    |       50000 |   1000 |          50 |
+| Nike India  | Shoes Billboard | Social media posts | Social Media - Sidebar Promotion |          1 | 2023-02-15   |        5000.00 | Paid           | 2023-02-20   | Credit Card    |       70000 |   1200 |          70 |
++-------------+-----------------+--------------------+----------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
+
+-- descriptive bill for client ID 2
+SELECT
+    c.name AS client_name,
+    cp.name AS campaign_name,
+    a.type AS advertisement_type,
+    ap.placement_details,
+    i.invoice_id,
+    i.invoice_date,
+    i.total_amount AS invoice_amount,
+    i.payment_status,
+    p.payment_date,
+    p.payment_method,
+    pm.impressions,
+    pm.clicks,
+    pm.conversions
+FROM
+    clients c
+JOIN
+    campaigns cp ON c.client_id = cp.client_id
+JOIN
+    advertisements a ON cp.campaign_id = a.campaign_id
+JOIN
+    advertisement_placements ap ON a.advertisement_id = ap.advertisement_id
+JOIN
+    invoices i ON c.client_id = i.client_id AND cp.campaign_id = i.campaign_id
+JOIN
+    payments p ON i.invoice_id = p.invoice_id
+LEFT JOIN
+    performance_metrics pm ON a.advertisement_id = pm.advertisement_id
+WHERE
+    c.client_id = 2 AND
+    cp.campaign_id = 3;
+
++---------------------------------+-----------------------------+-----------------------+--------------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
+| client_name                     | campaign_name               | advertisement_type    | placement_details                    | invoice_id | invoice_date | invoice_amount | payment_status | payment_date | payment_method | impressions | clicks | conversions |
++---------------------------------+-----------------------------+-----------------------+--------------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
+| Haldiram Snacks Private Limited | Haldirams End Of Month Sale | Social media posts    | Social Media - Featured Ad Placement |          3 | 2023-03-15   |        6000.00 | Paid           | 2023-03-20   | Credit Card    |       90000 |   1800 |          90 |
+| Haldiram Snacks Private Limited | Haldirams End Of Month Sale | Newspaper Ads/Banners | Newspaper - Social Media Promo       |          3 | 2023-03-15   |        6000.00 | Paid           | 2023-03-20   | Credit Card    |      120000 |   2000 |         120 |
++---------------------------------+-----------------------------+-----------------------+--------------------------------------+------------+--------------+----------------+----------------+--------------+----------------+-------------+--------+-------------+
